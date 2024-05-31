@@ -17,9 +17,11 @@ import {useDispatch} from 'react-redux';
 import {StorageService} from '../services';
 import {GeneralAction} from '../actions';
 import UserService from '../services/UserService';
+import { useNavigation } from '@react-navigation/native';
 
 
-const AccountScreen = ({navigation}) => {
+const AccountScreen = ({}) => {
+  const navigation = useNavigation()
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
@@ -84,7 +86,7 @@ const AccountScreen = ({navigation}) => {
         </View>
       </View>
       <View style={styles.menuContainer}>
-        <TouchableOpacity style={styles.menuItem} activeOpacity={0.8}>
+        <TouchableOpacity onPress={()=>navigation.navigate('Order')}  style={styles.menuItem} activeOpacity={0.8}>
           <View style={styles.menuIcon}>
             <MaterialCommunityIcons
               name="truck-fast-outline"

@@ -13,6 +13,7 @@ import BookmarkScreen from './BookmarkScreen';
 import AccountScreen from './AccountScreen';
 import ProfileScreen from './ProfileScreen';
 import ModifyScreen from './ModifyScreen';
+import OrderScreen from './OrderScreen';
 
 export {
   SplashScreen,
@@ -30,4 +31,5 @@ export {
   AccountScreen,
   ProfileScreen,
   ModifyScreen,
+  OrderScreen,
 };
