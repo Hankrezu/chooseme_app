@@ -12,8 +12,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import {Colors, Fonts} from '../contants';
 import {Display} from '../utils';
+import { useNavigation } from '@react-navigation/native';
 
 const ForgotPasswordScreen = () => {
+  const navigation = useNavigation();
+  
   return (
     <View style={styles.container}>
       <StatusBar

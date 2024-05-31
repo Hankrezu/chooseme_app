@@ -3,8 +3,8 @@ import axios from 'axios';
 import {authHeader} from '../utils/Generator';
 import {getToken} from '../Store';
 
-const getAllCategories = async () => {
-  console.log('CategoryService | getAllCategories');
+const getAllCategory = async () => {
+  console.log('CategoryService | getAllCategory');
 
   try {
     let categoryResponse = await axios.get(
@@ -33,5 +33,33 @@ const getAllCategories = async () => {
   }
 };
 
+const getOneFoodById = async foodId => {
+  console.log('FoodService | getOneFoodById');
+  try {
+    let foodResponse = await axios.get(
+      `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.FOOD}/${foodId}`,
+      {
+        headers: authHeader(getToken()),
+      },
+    );
+    if (foodResponse?.status === 200) {
+      return {
+        status: true,
+        message: 'Food data fetched',
+        data: foodResponse?.data?.data,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Food data not found',
+      };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: 'Food data not found',
+    };
+  }
+};
 
-export default {getAllCategories};
+export default {getAllCategory,getOneFoodById};
