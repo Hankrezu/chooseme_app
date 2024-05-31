@@ -8,7 +8,7 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {CartAction} from '../actions';
 
-const FoodCard = ({id, name, description, price,
+const HomeFoodCard = ({id, name, description, price,
   restaurantId, image, navigate}) => {
   const dispatch = useDispatch();
   const itemCount = useSelector(
@@ -134,4 +134,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FoodCard;
+export default HomeFoodCard;
+

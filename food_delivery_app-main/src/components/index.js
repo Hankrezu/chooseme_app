@@ -8,7 +8,7 @@ import RestaurantMediumCard from './RestaurantMediumCard';
 import CategoryListItem from './CategoryListItem';
 import HomeFoodCard from './HomeFoodCard';
 import BookmarkCard from './BookmarkCard';
-import FoodCard from './FoodCard'
+import FoodCard from './FoodCard';
 
 export {
   WelcomeCard,
