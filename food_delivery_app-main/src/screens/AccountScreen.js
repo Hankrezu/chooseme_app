@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,9 +16,14 @@ import {Display} from '../utils';
 import {useDispatch} from 'react-redux';
 import {StorageService} from '../services';
 import {GeneralAction} from '../actions';
+import UserService from '../services/UserService';
+
 
 const AccountScreen = ({navigation}) => {
   const dispatch = useDispatch();
+
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
 
   const logout = () => {
     StorageService.setToken('').then(() => {
@@ -26,6 +31,24 @@ const AccountScreen = ({navigation}) => {
       dispatch(GeneralAction.setUserData(null));
     });
   };
+
+  useEffect(()=>{
+    const getData = async () => {
+      try { 
+        let response = await UserService.getUserData();  
+        let userData = response.data;
+        setUsername(userData.data.username) 
+        setEmail(userData.data.email)
+      } catch (error) {
+        return {
+          status: false,
+          message: `${error?.message}`,
+        };
+      }
+    };
+    getData()
+  },[])
+
 
   return (
     <View style={styles.container}>
@@ -56,8 +79,8 @@ const AccountScreen = ({navigation}) => {
           <Image style={styles.profileImage} source={Images.AVATAR} />
         </View>
         <View style={styles.profileTextContainer}>
-          <Text style={styles.nameText}>????</Text>
-          <Text style={styles.emailText}>ameeen.faroook@gmail.com</Text>
+          <Text style={styles.nameText}>{username}</Text>
+          <Text style={styles.emailText}>{email}</Text>
         </View>
       </View>
       <View style={styles.menuContainer}>
@@ -90,12 +113,12 @@ const AccountScreen = ({navigation}) => {
               color={Colors.DEFAULT_YELLOW}
             />
           </View>
-          <Text style={styles.menuText}>Delivery Addresses</Text>
+          <Text style={styles.menuText}>Delivery {'\n'} Addresses</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.mainContainer}>
         <Text style={styles.sectionHeaderText}>My Account</Text>
-        <TouchableOpacity style={styles.sectionContainer} activeOpacity={0.8}>
+        <TouchableOpacity onPress={()=>navigation.navigate('Profile')} style={styles.sectionContainer} activeOpacity={0.8}>
           <View style={styles.sectionTextContainer}>
             <Ionicons
               name="person-outline"

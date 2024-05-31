@@ -11,7 +11,6 @@ var restaurantRouter = require("./routes/restaurant.route");
 var cartRouter = require("./routes/cart.route");
 var foodRouter = require("./routes/food.route");
 var bookmarkRouter = require("./routes/bookmark.route");
-var categoryRouter = require("./routes/category.route")
 const MongoDB = require("./services/mongodb.service");
 
 MongoDB.connectToMongoDB();
@@ -37,7 +36,6 @@ app.use("/api/restaurant", restaurantRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/food", foodRouter);
 app.use("/api/bookmark", bookmarkRouter);
-app.use("/api/category", categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

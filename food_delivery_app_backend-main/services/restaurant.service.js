@@ -70,5 +70,4 @@ const getOneRestaurantById = async (restaurantId) => {
   }
 };
 
-
 module.exports = { getAllRestaurant, getOneRestaurantById };

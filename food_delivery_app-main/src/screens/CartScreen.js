@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Modal,
 } from 'react-native';
 import {Colors, Fonts, Images} from '../contants';
 import {FoodCard, Separator} from '../components';
@@ -15,9 +16,46 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Display} from '../utils';
 import {useSelector} from 'react-redux';
+import UserService from '../services/UserService';
 
 const CartScreen = ({navigation}) => {
+
+  const [visible, setVisible] = useState(false);
+  const [phoneNumber,setPhoneNumber] = useState()
+  
+  const hide = ()=> setVisible(false);
+
   const cart = useSelector(state => state?.cartState?.cart);
+
+  const isPhoneNumber = async () => {
+    setVisible(true) 
+    // let user = {
+    //   phone
+    // };
+    try { 
+      let response = await UserService.getUserData();  
+      let userData = response.data;
+      console.log(userData.data.phone)
+        if (userData.data.phone) {
+          console.log('Phone number exists')
+          setPhoneNumber(userData.data.phone)
+        } else {
+          console.log('Phone number does not exists')
+          
+          return {
+            status: false,
+            message: 'Phone number does not exist',
+          };
+        
+      } 
+    } catch (error) {
+      return {
+        status: false,
+        message: `Error checking phone number: ${error?.message}`,
+      };
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -86,7 +124,7 @@ const CartScreen = ({navigation}) => {
                 $ {cart?.metaData?.grandTotal?.toFixed(2)}
               </Text>
             </View>
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity onPress={isPhoneNumber} style={styles.checkoutButton}>
               <View style={styles.rowAndCenter}>
                 <Ionicons
                   name="cart-outline"
@@ -120,11 +158,47 @@ const CartScreen = ({navigation}) => {
           <Separator height={Display.setHeight(15)} />
         </View>
       )}
+
+
+      <Modal animationType='fade' transparent={true} visible={visible} onRequestClose={hide}>
+        <View style={styles.lower}> 
+          <View style={styles.modalContent}>
+            { phoneNumber != null
+            ? <Text style={{fontSize:12}} onPress={hide}>HavePhoneNumber</Text> 
+            : <Text style={{fontSize:12}} onPress={hide}>DontHavePhoneNumber</Text> 
+            }        
+          </View>
+        </View> 
+      </Modal>
+
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  fill:{flex:1},
+  upper:{height:100, backgroundColor:'#DDD', opacity:.5},
+  lower:
+  {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,  // Optional: adds rounded corners
+    height:Display.setHeight(30),
+    width:Display.setWidth(90)
+    
+  },
+  hideText: {
+    fontSize: 50,
+    color: 'white',  // Optional: sets text color to white for better visibility
+  },
+
   container: {
     flex: 1,
     backgroundColor: Colors.DEFAULT_WHITE,
