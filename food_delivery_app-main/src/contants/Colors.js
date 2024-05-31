@@ -23,8 +23,12 @@ export default {
   DARK_FOUR: '#282828',
   DARK_FIVE: '#B3B3B3',
   
+  YELLOW:'#FFFDDB',
+  BROWN: '#3C2716',
+  PEACH:'#FFBE98',
   LIGHT_GREY3:'#F0F0F0',
   PEACH:'#FFBE98',
   CYAN:'#77E2E1',
-  GREY:'#D9D9D9'
+  GREY:'#D9D9D9',
+  LIGHT_PEACH:'#FFCEB2',
 };

@@ -70,7 +70,7 @@ const CartScreen = ({navigation}) => {
           size={30}
           onPress={() => navigation.goBack()}
         />
-        <Text style={styles.headerTitle}>My Cart</Text>
+        <Text style={styles.headerTitle}>My Order</Text>
       </View>
       {cart?.cartItems?.length > 0 ? (
         <>
