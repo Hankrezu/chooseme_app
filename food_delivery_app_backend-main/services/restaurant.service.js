@@ -1,5 +1,7 @@
+const { response } = require("express");
 const { mongoConfig } = require("../config");
 const MongoDB = require("./mongodb.service");
+const { ObjectId } = require('mongodb');
 
 const getAllRestaurant = async () => {
   try {
@@ -49,7 +51,17 @@ const getOneRestaurantById = async (restaurantId) => {
         },
       ])
       .toArray();
+
     if (restaurant && restaurant?.length > 0) {
+      let categoryNames = restaurant[0]["categories"].map(async(categoryId) =>  {
+        let categoriyDetail = await MongoDB.db
+          .collection(mongoConfig.collections.CATEGORIES)
+          .findOne({ _id: ObjectId(categoryId )})
+        return categoriyDetail["category"]
+      })
+
+      restaurant[0]["categories"] = await Promise.all(categoryNames)
+
       return {
         status: true,
         message: "Restaurant found successfully",

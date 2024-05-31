@@ -8,7 +8,8 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {CartAction} from '../actions';
 
-const FoodCard = ({id, name, description, price, image, navigate}) => {
+const HomeFoodCard = ({id, name, description, price,
+  restaurantId, image, navigate}) => {
   const dispatch = useDispatch();
   const itemCount = useSelector(
     state =>
@@ -18,7 +19,6 @@ const FoodCard = ({id, name, description, price, image, navigate}) => {
   const addToCart = foodId => dispatch(CartAction.addToCart({foodId}));
   const removeFromCart = foodId =>
     dispatch(CartAction.removeFromCart({foodId}));
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigate()} activeOpacity={0.8}>
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     elevation: 2,
-    backgroundColor: Colors.LIGHT_GREY,
+    width:'95%',
+    backgroundColor: Colors.DEFAULT_WHITE,
   },
   image: {
     height: 100,
@@ -133,4 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FoodCard;
+export default HomeFoodCard;
