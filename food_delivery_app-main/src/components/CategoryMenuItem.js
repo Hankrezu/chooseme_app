@@ -2,12 +2,15 @@ import React from 'react';
 import {Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Colors, Fonts, Images} from '../contants';
 
-const CategoryMenuItem = ({name, logo, activeCategory, setActiveCategory}) => {
+const CategoryMenuItem = ({_id,category}) => {
   return (
     <TouchableOpacity
-      onPress={() => setActiveCategory(name)}
+      onPress={() => setActiveCategory(category)}
       style={styles.category()}>
-      <Text style={styles.categoryText(activeCategory === name)}>{name}</Text>
+                 <Text style={styles.categoryText}>
+            {category}
+          </Text> 
+   
     </TouchableOpacity>
   );
 };

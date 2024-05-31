@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 import {
   CategoryMenuItem,
-  RestaurantCard,
-  RestaurantMediumCard,
-  FoodCard,
+  HomeFoodCard,
   Separator,
 } from '../components';
 import {Colors, Fonts, Mock} from '../contants';
@@ -87,15 +85,23 @@ const HomeScreen = ({navigation}) => {
         </View>
 
         <View style={styles.categoriesContainer}>
-          {Mock.CATEGORIES.map(({name, logo}) => (
-            <CategoryMenuItem
-              key={name}
-              name={name}
-              logo={logo}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-            />
-          ))}
+        {/* <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={categories}
+            keyExtractor={item => item?.id}
+            ListHeaderComponent={() => <Separator height={20} />}
+            ListFooterComponent={() => <Separator height={20} />}
+            ItemSeparatorComponent={() => <Separator height={10} />}
+            renderItem={({item}) => (   
+               <CategoryMenuItem
+                 {...item}
+                  // navigate={() =>
+                  //   navigation.navigate('Restaurant', { restaurantId: item?.restaurantId})
+                  // }
+              />
+            )}
+            /> */}
         </View>
       </View>
         
@@ -108,7 +114,7 @@ const HomeScreen = ({navigation}) => {
             ListFooterComponent={() => <Separator height={20} />}
             ItemSeparatorComponent={() => <Separator height={10} />}
             renderItem={({item}) => (   
-               <FoodCard
+               <HomeFoodCard
                  {...item}
                   navigate={() =>
                     navigation.navigate('Restaurant', { restaurantId: item?.restaurantId})

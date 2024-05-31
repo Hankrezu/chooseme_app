@@ -6,8 +6,9 @@ import CategoryMenuItem from './CategoryMenuItem';
 import RestaurantCard from './RestaurantCard';
 import RestaurantMediumCard from './RestaurantMediumCard';
 import CategoryListItem from './CategoryListItem';
-import FoodCard from './FoodCard';
+import HomeFoodCard from './HomeFoodCard';
 import BookmarkCard from './BookmarkCard';
+import FoodCard from './FoodCard'
 
 export {
   WelcomeCard,
@@ -18,6 +19,7 @@ export {
   RestaurantCard,
   RestaurantMediumCard,
   CategoryListItem,
-  FoodCard,
+  HomeFoodCard,
   BookmarkCard,
+  FoodCard,
 };
