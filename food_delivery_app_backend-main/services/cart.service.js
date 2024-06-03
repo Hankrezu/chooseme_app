@@ -1,12 +1,12 @@
 const { mongoConfig } = require("../config");
 const MongoDB = require("./mongodb.service");
 
-const addToCart = async ({ foodId, username }) => {
+const addToCart = async ({ foodId, restaurantId, username }) => {
   try {
     let updatedCart = await MongoDB.db
       .collection(mongoConfig.collections.CARTS)
       .updateOne(
-        { foodId, username },
+        { foodId, restaurantId, username },
         { $inc: { count: 1 } },
         { upsert: true }
       );

@@ -32,12 +32,12 @@ const getCartItems = async () => {
   }
 };
 
-const addToCart = async ({foodId}) => {
+const addToCart = async ({foodId, restaurantId}) => {
   console.log('CartService | addToCart');
   try {
     let response = await axios.post(
       `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.CART}/${foodId}`,
-      {},
+      { restaurantId },
       {
         headers: authHeader(getToken()),
       },
@@ -62,6 +62,7 @@ const addToCart = async ({foodId}) => {
     };
   }
 };
+
 
 const removeFromCart = async ({foodId}) => {
   console.log('CartService | removeFromCart');

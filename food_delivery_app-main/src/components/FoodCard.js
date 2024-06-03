@@ -8,14 +8,14 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {CartAction} from '../actions';
 
-const FoodCard = ({id, name, description, price, image, navigate}) => {
+const FoodCard = ({id, name, description,restaurantId, price, image, navigate}) => {
   const dispatch = useDispatch();
   const itemCount = useSelector(
     state =>
       state?.cartState?.cart?.cartItems?.find(item => item?.foodId === id)
         ?.count,
   );
-  const addToCart = foodId => dispatch(CartAction.addToCart({foodId}));
+  const addToCart = (foodId, restaurantId) => dispatch(CartAction.addToCart({ foodId, restaurantId }));
   const removeFromCart = foodId =>
     dispatch(CartAction.removeFromCart({foodId}));
 
@@ -60,7 +60,7 @@ const FoodCard = ({id, name, description, price, image, navigate}) => {
               name="plus"
               color={Colors.DEFAULT_YELLOW}
               size={18}
-              onPress={() => addToCart(id)}
+              onPress={() => addToCart(id, restaurantId)}
             />
           </View>
         </View>

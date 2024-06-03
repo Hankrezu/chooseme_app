@@ -43,26 +43,6 @@ const HomeFoodCard = ({id, name, description, price,
         </TouchableOpacity>
         <View style={styles.footerContainer}>
           <Text style={styles.priceText}>$ {price}</Text>
-          <View style={styles.itemAddContainer}>
-            {itemCount > 0 ? (
-              <>
-                <AntDesign
-                  name="minus"
-                  color={Colors.DEFAULT_YELLOW}
-                  size={18}
-                  onPress={() => removeFromCart(id)}
-                />
-                <Text style={styles.itemCountText}>{itemCount}</Text>
-              </>
-            ) : null}
-
-            <AntDesign
-              name="plus"
-              color={Colors.DEFAULT_YELLOW}
-              size={18}
-              onPress={() => addToCart(id)}
-            />
-          </View>
         </View>
       </View>
     </View>

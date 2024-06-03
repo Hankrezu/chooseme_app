@@ -13,9 +13,10 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/:foodId", async (req, res) => {
-  let { foodId } = req?.params;
-  let username = req?.username;
-  let response = await addToCart({ foodId, username });
+  let { foodId } = req.params;
+  let { restaurantId } = req.body;
+  let username = req.username;
+  let response = await addToCart({ foodId, restaurantId, username });
   res.json(response);
 });
 
