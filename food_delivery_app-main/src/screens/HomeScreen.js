@@ -85,23 +85,19 @@ const HomeScreen = ({navigation}) => {
         </View>
 
         <View style={styles.categoriesContainer}>
-        {/* <FlatList
+        <FlatList
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             data={categories}
-            keyExtractor={item => item?.id}
             ListHeaderComponent={() => <Separator height={20} />}
             ListFooterComponent={() => <Separator height={20} />}
             ItemSeparatorComponent={() => <Separator height={10} />}
             renderItem={({item}) => (   
                <CategoryMenuItem
                  {...item}
-                  // navigate={() =>
-                  //   navigation.navigate('Restaurant', { restaurantId: item?.restaurantId})
-                  // }
               />
             )}
-            /> */}
+            />
         </View>
       </View>
         
