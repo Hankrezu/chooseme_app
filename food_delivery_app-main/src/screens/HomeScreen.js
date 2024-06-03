@@ -19,6 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {RestaurantService} from '../services';
 import {FoodService} from '../services';
+import {CategoryService} from '../services'
 import {Display} from '../utils';
 
 const sortStyle = isActive =>
@@ -29,6 +30,7 @@ const sortStyle = isActive =>
 const HomeScreen = ({navigation}) => {
   const [activeCategory, setActiveCategory] = useState();
   const [foods, setFoods] = useState(null);
+  const [categories, setCategories] = useState(null);
   const [activeSortItem, setActiveSortItem] = useState('recent');
 
   useEffect(() => {
@@ -39,6 +41,13 @@ const HomeScreen = ({navigation}) => {
         }
       }
     );
+    CategoryService.getAllCategories().then(response => {
+      if (response?.status) {
+        setCategories(response?.data);
+        // console.log(response?.data);
+      }
+    }
+  )
     });
     return unsubscribe;
   }, []);

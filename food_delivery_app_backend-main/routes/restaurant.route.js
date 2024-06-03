@@ -16,6 +16,4 @@ router.get("/:restaurantId", async (req, res) => {
   res.json(response);
 });
 
-
-
 module.exports = router;

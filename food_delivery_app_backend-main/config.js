@@ -10,7 +10,7 @@ module.exports = {
       CARTS: "carts",
       FOODS: "foods",
       BOOKMARKS: "bookmarks",
-      CATEGORY:"categories"
+      CATEGORIES:"categories"
     },
   },
   serverConfig: {
@@ -19,3 +19,4 @@ module.exports = {
   },
   tokenSecret: "foodelivery_secret",
 };
+
