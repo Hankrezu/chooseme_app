@@ -121,4 +121,53 @@ const getCartItems = async ({ username }) => {
   }
 };
 
-module.exports = { addToCart, removeFromCart, getCartItems };
+const getCartRestaurant = async ({ username }) => {
+  try {
+    let cartRestaurant = await MongoDB.db
+      .collection(mongoConfig.collections.CARTS)
+      .aggregate([
+        {
+          $match: {
+            username: username,
+          },
+        },
+        {
+          $lookup: {
+            from: "restaurants",
+            localField: "restaurantId",
+            foreignField: "id",
+            as: "restaurants",
+          },
+        },
+        {
+          $unwind: {
+            path: "$restaurants",
+          },
+        },
+      ])
+      .toArray();
+    if (cartRestaurant?.length > 0) {
+      
+      return {
+        status: true,
+        message: "Cart Restaurants fetched Successfully",
+        data: {
+          cartRestaurant,
+          
+        },
+      };
+    } else {
+      return {
+        status: false,
+        message: "Cart Restaurants not found",
+      };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "Cart Restaurants fetched Failed",
+    };
+  }
+};
+
+module.exports = { addToCart, removeFromCart, getCartItems,getCartRestaurant };
