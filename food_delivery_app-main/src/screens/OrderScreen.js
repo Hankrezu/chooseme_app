@@ -61,21 +61,21 @@ const OrderScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>My Order</Text>
       </View>
       <View>
-        <FlatList
-          data={restaurants}
-          keyExtractor={(item, index) => `${item._id}_${index}`}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => <Separator height={10} />}
-          ListFooterComponent={() => <Separator height={10} />}
-          renderItem={({ item }) => (
-            <RestaurantCard
-              {...item}
-              navigate={restaurantId =>
-                navigation.navigate('Cart', { restaurantId })
-              }
-            />
-          )}
-        />
+      <FlatList
+        data={restaurants}
+        keyExtractor={(item, index) => `${item._id}_${index}`}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={() => <Separator height={10} />}
+        ListFooterComponent={() => <Separator height={10} />}
+        renderItem={({ item }) => (
+          <RestaurantCard
+            {...item}
+            navigate={() =>
+            navigation.navigate('Cart', { restaurantId: item._id }) // Truyền restaurantId khi chuyển trang
+            }   
+          />
+        )}
+      />
       </View>
     </View>
   );

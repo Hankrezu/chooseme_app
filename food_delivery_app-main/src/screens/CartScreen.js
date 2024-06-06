@@ -28,8 +28,9 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state?.cartState?.cart);
   const cartItemsByRestaurant = useSelector(state => state?.cartState?.cartItemsByRestaurant);
+
   
-  // console.log(cart,restaurantId)
+  console.log(restaurantId)
 
   useEffect(() => {
     // Dispatch actions to get cart items and cart restaurant data
@@ -86,7 +87,7 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
               {cartItemsByRestaurant?.cartItems?.map(item => (
                 <FoodCard
                   {...item?.food}
-                  key={item?.food?.id}
+                  key={item?.food?._id}
                   navigate={() =>
                     navigation.navigate('Food', {foodId: item?.id})
                   }
