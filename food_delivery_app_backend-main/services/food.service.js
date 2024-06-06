@@ -1,12 +1,22 @@
 const { mongoConfig } = require("../config");
 const MongoDB = require("./mongodb.service");
+const { ObjectId } = require('mongodb');
 
 const getOneFoodById = async (foodId) => {
   try {
     let food = await MongoDB.db
       .collection(mongoConfig.collections.FOODS)
-      .findOne({ id: foodId });
+      .findOne({ _id: ObjectId(foodId) });
     if (food) {
+      let categoryNames = food.categories.map(async (categoryId) => {
+        let categoryDetail = await MongoDB.db
+          .collection(mongoConfig.collections.CATEGORIES)
+          .findOne({ _id: ObjectId(categoryId) });
+        return categoryDetail ? categoryDetail.name : null;
+      });
+
+      // Replace category IDs with names
+      food.categories = await Promise.all(categoryNames);
       return {
         status: true,
         message: "Food found successfully",
@@ -33,7 +43,21 @@ const getAllFoods = async () => {
       .find()
       .toArray();
 
-    if (foods && foods?.length > 0) {
+    if (foods && foods.length > 0) {
+      // Iterate over all food items
+      for (let i = 0; i < foods.length; i++) {
+        // Get the category names for each food item
+        let categoryNames = foods[i].categories.map(async (categoryId) => {
+          let categoryDetail = await MongoDB.db
+            .collection(mongoConfig.collections.CATEGORIES)
+            .findOne({ _id: ObjectId(categoryId) });
+          return categoryDetail ? categoryDetail.name : null;
+        });
+
+        // Replace category IDs with names
+        foods[i].categories = await Promise.all(categoryNames);
+      }
+
       return {
         status: true,
         message: "Foods found successfully",
@@ -42,14 +66,14 @@ const getAllFoods = async () => {
     } else {
       return {
         status: false,
-        message: "No restaurants found",
+        message: "No foods found",
       };
     }
   } catch (error) {
     return {
       status: false,
-      message: "Restaurant finding failed",
-      error: `Restaurant finding failed : ${error?.message}`,
+      message: "Food finding failed",
+      error: `Food finding failed : ${error?.message}`,
     };
   }
 };
