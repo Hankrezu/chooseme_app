@@ -39,7 +39,7 @@ const AccountScreen = ({}) => {
       try { 
         let response = await UserService.getUserData();  
         let userData = response.data;
-        setUsername(userData.data.username) 
+        setUsername(userData.data.name) 
         setEmail(userData.data.email)
       } catch (error) {
         return {
