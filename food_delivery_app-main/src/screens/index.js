@@ -16,6 +16,7 @@ import ModifyScreen from './ModifyScreen';
 import OrderScreen from './OrderScreen';
 import LocationScreen from './LocationScreen';
 
+
 export {
   SplashScreen,
   WelcomeScreen,
@@ -34,5 +35,4 @@ export {
   ModifyScreen,
   OrderScreen,
   LocationScreen,
-  
 };
