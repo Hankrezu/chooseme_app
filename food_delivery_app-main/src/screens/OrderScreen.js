@@ -1,46 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React,{useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   StatusBar,
-  FlatList,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Modal,
 } from 'react-native';
-import { Colors, Fonts, Images } from '../contants';
-import { Separator, BookmarkCard,RestaurantCard } from '../components';
+import {Colors, Fonts, Images} from '../contants';
+import {FoodCard, Separator} from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Display } from '../utils';
-import { CartService } from '../services';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Display} from '../utils';
+import {useSelector} from 'react-redux';
+import UserService from '../services/UserService';
 
-const OrderScreen = ({ navigation }) => {
-  const [restaurants, setRestaurants] = useState([]);
+const CartScreen = ({navigation}) => {
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      CartService.getCartRestaurant().then(response => {
-        if (response?.status) {
-          const uniqueRestaurants = getUniqueRestaurants(response?.data?.cartRestaurant);
-          setRestaurants(uniqueRestaurants);
-        }
-      }).catch(error => {
-        console.log('Error in CartService.getCartRestaurant:', error);
-      });
-    });
+  const [visible, setVisible] = useState(false);
+  const [phoneNumber,setPhoneNumber] = useState()
+  
+  const hide = ()=> setVisible(false);
 
-    return unsubscribe;
-  }, [navigation]);
+  const cart = useSelector(state => state?.cartState?.cart);
 
-  const getUniqueRestaurants = (cartItems) => {
-    const restaurantMap = {};
-    cartItems.forEach(item => {
-      if (item.restaurants) {
-        const restaurantId = item.restaurants.id;
-        if (!restaurantMap[restaurantId]) {
-          restaurantMap[restaurantId] = item.restaurants;
-        }
-      }
-    });
-    return Object.values(restaurantMap);
+  const isPhoneNumber = async () => {
+    setVisible(true) 
+    // let user = {
+    //   phone
+    // };
+    try { 
+      let response = await UserService.getUserData();  
+      let userData = response.data;
+      console.log(userData.data.phone)
+        if (userData.data.phone) {
+          console.log('Phone number exists')
+          setPhoneNumber(userData.data.phone)
+        } else {
+          console.log('Phone number does not exists')
+          
+          return {
+            status: false,
+            message: 'Phone number does not exist',
+          };
+        
+      } 
+    } catch (error) {
+      return {
+        status: false,
+        message: `Error checking phone number: ${error?.message}`,
+      };
+    }
   };
 
   return (
@@ -59,32 +72,115 @@ const OrderScreen = ({ navigation }) => {
         />
         <Text style={styles.headerTitle}>My Order</Text>
       </View>
-      <View>
-        <FlatList
-         
-          data={restaurants}
-          keyExtractor={(item, index) => `${item._id}_${index}`}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => <Separator height={10} />}
-          ListFooterComponent={() => <Separator height={10} />}
-          renderItem={({ item }) => (
-            <RestaurantCard
-              {...item}
-              navigate={restaurantId =>
-                navigation.navigate('Restaurant', { restaurantId })
-              }
-            />
-          )}
-        />
-      </View>
+      {cart?.cartItems?.length > 0 ? (
+        <>
+          <ScrollView>
+            <View style={styles.foodList}>
+              {cart?.cartItems?.map(item => (
+                <FoodCard
+                  {...item?.food}
+                  key={item?.food?.id}
+                  navigate={() =>
+                    navigation.navigate('Food', {foodId: item?.id})
+                  }
+                />
+              ))}
+            </View>
+            <View style={styles.promoCodeContainer}>
+              <View style={styles.rowAndCenter}>
+                <Entypo name="ticket" size={30} color={Colors.DEFAULT_YELLOW} />
+                <Text style={styles.promoCodeText}>Add Promo Code</Text>
+              </View>
+              <Ionicons
+                name="chevron-forward-outline"
+                size={20}
+                color={Colors.DEFAULT_BLACK}
+              />
+            </View>
+            <View style={styles.amountContainer}>
+              <View style={styles.amountSubContainer}>
+                <Text style={styles.amountLabelText}>Item Total</Text>
+                <Text style={styles.amountText}>
+                  $ {cart?.metaData?.itemsTotal?.toFixed(2)}
+                </Text>
+              </View>
+              <View style={styles.amountSubContainer}>
+                <Text style={styles.amountLabelText}>Discount</Text>
+                <Text style={styles.amountText}>
+                  $ {cart?.metaData?.discount?.toFixed(2)}
+                </Text>
+              </View>
+              <View style={styles.amountSubContainer}>
+                <Text style={styles.amountLabelText}>Delivery Fee</Text>
+                <Text
+                  style={{...styles.amountText, color: Colors.DEFAULT_GREEN}}>
+                  Free
+                </Text>
+              </View>
+            </View>
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalText}>Total</Text>
+              <Text style={styles.totalText}>
+                $ {cart?.metaData?.grandTotal?.toFixed(2)}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={isPhoneNumber} style={styles.checkoutButton}>
+              <View style={styles.rowAndCenter}>
+                <Ionicons
+                  name="cart-outline"
+                  color={Colors.DEFAULT_WHITE}
+                  size={20}
+                />
+                <Text style={styles.checkoutText}>Checkout</Text>
+              </View>
+              <Text style={styles.checkoutText}>
+                $ {cart?.metaData?.grandTotal?.toFixed(2)}
+              </Text>
+            </TouchableOpacity>
+            <Separator height={Display.setHeight(9)} />
+          </ScrollView>
+        </>
+      ) : (
+        <View style={styles.emptyCartContainer}>
+          <Image
+            style={styles.emptyCartImage}
+            source={Images.EMPTY_CART}
+            resizeMode="contain"
+          />
+          <Text style={styles.emptyCartText}>Cart Empty</Text>
+          <Text style={styles.emptyCartSubText}>
+            Go ahead and order some tasty food
+          </Text>
+          <TouchableOpacity style={styles.addButtonEmpty}>
+            <AntDesign name="plus" color={Colors.DEFAULT_WHITE} size={20} />
+            <Text style={styles.addButtonEmptyText}>Add Food</Text>
+          </TouchableOpacity>
+          <Separator height={Display.setHeight(15)} />
+        </View>
+      )}
+
+
+      <Modal animationType='fade' transparent={true} visible={visible} onRequestClose={hide}>
+        <View style={styles.lower}> 
+          <View style={styles.modalContent}>
+            { phoneNumber != null
+            ? <Text style={{fontSize:12}} onPress={hide}>HavePhoneNumber</Text> 
+            : <Text style={{fontSize:12}} onPress={hide}>DontHavePhoneNumber</Text> 
+            }        
+          </View>
+        </View> 
+      </Modal>
+
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  upper: { height: 100, backgroundColor: '#DDD', opacity: 0.5 },
-  lower: {
+  fill:{flex:1},
+  upper:{height:100, backgroundColor:'#DDD', opacity:.5},
+  lower:
+  {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -93,14 +189,16 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
-    height: Display.setHeight(30),
-    width: Display.setWidth(90)
+    borderRadius: 10,  // Optional: adds rounded corners
+    height:Display.setHeight(30),
+    width:Display.setWidth(90)
+    
   },
   hideText: {
     fontSize: 50,
-    color: 'white'
+    color: 'white',  // Optional: sets text color to white for better visibility
   },
+
   container: {
     flex: 1,
     backgroundColor: Colors.DEFAULT_WHITE,
@@ -238,4 +336,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OrderScreen;
+export default CartScreen;

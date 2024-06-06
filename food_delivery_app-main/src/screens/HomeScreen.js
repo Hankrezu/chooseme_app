@@ -1,37 +1,115 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   StatusBar,
-  ScrollView,
   FlatList,
-  TouchableOpacity,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import {
   CategoryMenuItem,
   HomeFoodCard,
   Separator,
 } from '../components';
-import {Colors, Fonts, Mock} from '../contants';
+import { Colors, Fonts } from '../contants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
-import {RestaurantService} from '../services';
-import {FoodService} from '../services';
-import {CategoryService} from '../services'
-import {Display} from '../utils';
+import { FoodService } from '../services';
+import { CategoryService } from '../services';
+import { Display } from '../utils';
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
 
 const sortStyle = isActive =>
   isActive
     ? styles.sortListItem
-    : {...styles.sortListItem, borderBottomColor: Colors.DEFAULT_WHITE};
+    : { ...styles.sortListItem, borderBottomColor: Colors.DEFAULT_WHITE };
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [activeCategory, setActiveCategory] = useState();
   const [foods, setFoods] = useState(null);
   const [categories, setCategories] = useState(null);
   const [activeSortItem, setActiveSortItem] = useState('recent');
+  const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState('Fetching address...');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const HERE_API_KEY = 'N1VJJkJ75nlrnW3wBWj2iLlQadWYpHRo990Ur6r_yME'; // Replace with your actual HERE API key
+
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      if (Platform.OS === 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: "Location Access Required",
+              message: "This app needs to access your location",
+              buttonNeutral: "Ask Me Later",
+              buttonNegative: "Cancel",
+              buttonPositive: "OK"
+            }
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("Location permission granted");
+            setPermissionGranted(true);
+            getCurrentLocation();
+          } else {
+            console.log("Location permission denied");
+            setPermissionGranted(false);
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+      } else {
+        // For iOS or other platforms
+        Geolocation.requestAuthorization();
+        setPermissionGranted(true);
+        getCurrentLocation();
+      }
+    };
+
+    const getCurrentLocation = () => {
+      Geolocation.getCurrentPosition(
+        position => {
+          setLocation(position);
+          fetchAddress(position.coords.latitude, position.coords.longitude);
+          setErrorMessage(null);
+        },
+        error => {
+          console.error(error);
+          setErrorMessage(error.message);
+        },
+        { enableHighAccuracy: true, timeout: 55000, maximumAge: 50000 }
+      );
+    };
+
+    const fetchAddress = async (latitude, longitude) => {
+      try {
+        const response = await axios.get(`https://revgeocode.search.hereapi.com/v1/revgeocode`, {
+          params: {
+            at: `${latitude},${longitude}`,
+            apiKey: HERE_API_KEY
+          }
+        });
+        if (response.data && response.data.items && response.data.items.length > 0) {
+          setAddress(truncate(response.data.items[0].address.label, 10));
+        } else {
+          setAddress("Address not found");
+        }
+      } catch (error) {
+        console.error(error);
+        setAddress("Error fetching address");
+      }
+    };
+
+    requestLocationPermission();
+  }, []);
+
+  const truncate = (input) => input.length > 30 ? `${input.substring(0, 30)}...` : input;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -39,19 +117,15 @@ const HomeScreen = ({navigation}) => {
         if (response?.status) {
           setFoods(response?.data);
         }
-      }
-    );
-    CategoryService.getAllCategories().then(response => {
-      if (response?.status) {
-        setCategories(response?.data);
-        // console.log(response?.data);
-      }
-    }
-  )
+      });
+      CategoryService.getAllCategories().then(response => {
+        if (response?.status) {
+          setCategories(response?.data);
+        }
+      });
     });
     return unsubscribe;
-  }, []);
-
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -60,13 +134,13 @@ const HomeScreen = ({navigation}) => {
         backgroundColor={Colors.DEFAULT_GREEN}
         translucent
       />
+
       <Separator height={StatusBar.currentHeight} />
-      
+
       <View style={styles.backgroundCurvedContainer} />
+
       <View style={styles.headerContainer}>
-
         <View style={styles.searchContainer}>
-
           <View style={styles.searchSection}>
             <Ionicons
               name="search-outline"
@@ -80,47 +154,60 @@ const HomeScreen = ({navigation}) => {
             name="sliders"
             size={20}
             color={Colors.DEFAULT_YELLOW}
-            style={{marginRight: 10}}
+            style={{ marginRight: 10 }}
           />
         </View>
-
+        <View style={styles.locationContainer}>
+          <Ionicons
+            name="location-outline"
+            size={15}
+            color={Colors.DEFAULT_WHITE}
+          />
+          <Text style={styles.locationText}>Delivered to</Text>
+          <Text style={styles.selectedLocationText}>{address}</Text>
+          <MaterialIcons
+            name="keyboard-arrow-down"
+            size={16}
+            color={Colors.DEFAULT_YELLOW}
+          />
+        </View>
         <View style={styles.categoriesContainer}>
-        <FlatList
+          {/* <FlatList
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             data={categories}
             ListHeaderComponent={() => <Separator height={20} />}
             ListFooterComponent={() => <Separator height={20} />}
             ItemSeparatorComponent={() => <Separator height={10} />}
-            renderItem={({item}) => (   
-               <CategoryMenuItem
-                 {...item}
+            renderItem={({ item }) => (
+              <CategoryMenuItem
+                {...item}
               />
             )}
-            />
+          /> */}
         </View>
       </View>
-        
-        <View style={styles.horizontalListContainer}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={foods}
-            keyExtractor={item => item?.id}
-            ListHeaderComponent={() => <Separator height={20} />}
-            ListFooterComponent={() => <Separator height={20} />}
-            ItemSeparatorComponent={() => <Separator height={10} />}
-            renderItem={({item}) => (   
-               <HomeFoodCard
-                 {...item}
-                  navigate={() =>
-                    navigation.navigate('Restaurant', { restaurantId: item?.restaurantId})
-                  }
-              />
-            )}
+          
+      <View style={styles.horizontalListContainer}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={foods}
+          keyExtractor={item => item?._id}
+          ListHeaderComponent={() => <Separator height={20} />}
+          ListFooterComponent={() => <Separator height={20} />}
+          ItemSeparatorComponent={() => <Separator height={10} />}
+          renderItem={({ item }) => (
+            <HomeFoodCard
+              {...item}
+              navigate={() =>
+                navigation.navigate('Restaurant', { restaurantId: item?.restaurantId })
+              }
             />
-        </View>
-        <Separator height={Display.setHeight(5)} />
+          )}
+        />
       </View>
+      <Separator height={Display.setHeight(5)} />
+    </View>
   );
 };
 
@@ -211,8 +298,8 @@ const styles = StyleSheet.create({
   },
   horizontalListContainer: {
     marginTop: 20,
-    marginLeft:'5%',
-    marginBottom:190,
+    marginLeft: '5%',
+    marginBottom: 190,
   },
   listHeader: {
     flexDirection: 'row',

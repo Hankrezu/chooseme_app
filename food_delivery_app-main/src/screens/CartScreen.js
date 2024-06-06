@@ -29,9 +29,6 @@ const CartScreen = ({navigation}) => {
 
   const isPhoneNumber = async () => {
     setVisible(true) 
-    // let user = {
-    //   phone
-    // };
     try { 
       let response = await UserService.getUserData();  
       let userData = response.data;
@@ -41,12 +38,10 @@ const CartScreen = ({navigation}) => {
           setPhoneNumber(userData.data.phone)
         } else {
           console.log('Phone number does not exists')
-          
           return {
             status: false,
             message: 'Phone number does not exist',
           };
-        
       } 
     } catch (error) {
       return {
