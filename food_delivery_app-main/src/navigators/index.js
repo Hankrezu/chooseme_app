@@ -16,6 +16,7 @@ import {
   AccountScreen,
   ModifyScreen,
   OrderScreen,
+  CartScreen,
   LocationScreen,
 } from '../screens';
 import HomeTabs from './BottomTabs';
@@ -65,6 +66,7 @@ const Navigators = () => {
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Modify" component={ModifyScreen}/>
             <Stack.Screen name="Order" component={OrderScreen}/>
+            <Stack.Screen name="Cart" component={CartScreen}/>
             <Stack.Screen name="Location" component={LocationScreen}/>
             
           </>

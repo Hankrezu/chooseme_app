@@ -121,4 +121,111 @@ const getCartItems = async ({ username }) => {
   }
 };
 
-module.exports = { addToCart, removeFromCart, getCartItems };
+const getCartRestaurant = async ({ username }) => {
+  try {
+    let cartRestaurant = await MongoDB.db
+      .collection(mongoConfig.collections.CARTS)
+      .aggregate([
+        {
+          $match: {
+            username: username,
+          },
+        },
+        {
+          $lookup: {
+            from: "restaurants",
+            localField: "restaurantId",
+            foreignField: "id",
+            as: "restaurants",
+          },
+        },
+        {
+          $unwind: {
+            path: "$restaurants",
+          },
+        },
+      ])
+      .toArray();
+    if (cartRestaurant?.length > 0) {
+      
+      return {
+        status: true,
+        message: "Cart Restaurants fetched Successfully",
+        data: {
+          cartRestaurant,
+          
+        },
+      };
+    } else {
+      return {
+        status: false,
+        message: "Cart Restaurants not found",
+      };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "Cart Restaurants fetched Failed",
+    };
+  }
+};
+
+const getCartItemsByRestaurant = async ({ username, restaurantId }) => {
+  try {
+    let cartItems = await MongoDB.db
+      .collection(mongoConfig.collections.CARTS)
+      .aggregate([
+        {
+          $match: {
+            username: username,
+            restaurantId: restaurantId,
+          },
+        },
+        {
+          $lookup: {
+            from: "foods",
+            localField: "foodId",
+            foreignField: "id",
+            as: "food",
+          },
+        },
+        {
+          $unwind: {
+            path: "$food",
+          },
+        },
+      ])
+      .toArray();
+    if (cartItems?.length > 0) {
+      let itemsTotal = cartItems
+        ?.map((cartItem) => cartItem?.food?.price * cartItem?.count)
+        ?.reduce((a, b) => parseFloat(a) + parseFloat(b));
+      let discount = 0;
+      return {
+        status: true,
+        message: "Cart items fetched Successfully",
+        data: {
+          cartItems,
+          metaData: {
+            itemsTotal,
+            discount,
+            grandTotal: itemsTotal - discount,
+          },
+        },
+      };
+    } else {
+      return {
+        status: false,
+        message: "Cart items not found",
+      };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: "Cart items fetched Failed",
+    };
+  }
+};
+
+
+module.exports = { addToCart, removeFromCart, getCartItems,getCartRestaurant,getCartItemsByRestaurant  };
