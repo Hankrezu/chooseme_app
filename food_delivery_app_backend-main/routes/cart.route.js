@@ -15,7 +15,6 @@ router.get("/", async (req, res) => {
 });
 
 
-
 router.get("/restaurants", async (req, res) => {
   let username = req?.username;
   let response = await getCartRestaurant({ username });

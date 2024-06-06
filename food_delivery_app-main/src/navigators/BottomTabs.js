@@ -5,7 +5,6 @@ import {
   BookmarkScreen,
   CartScreen,
   HomeScreen,
-  OrderScreen
 } from '../screens';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Display} from '../utils';
@@ -47,8 +46,8 @@ export default () => (
       }}
     />
     <BottomTabs.Screen
-      name="Order"
-      component={OrderScreen}
+      name="Cart"
+      component={CartScreen}
       options={{
         tabBarIcon: ({color}) => (
           <Ionicons name="cart-outline" size={23} color={color} />
