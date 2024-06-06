@@ -3,19 +3,12 @@ const {
   addToCart,
   removeFromCart,
   getCartItems,
-  getCartRestaurant
 } = require("../services/cart.service");
 var router = express.Router();
 
 router.get("/", async (req, res) => {
   let username = req?.username;
   let response = await getCartItems({ username });
-  res.json(response);
-});
-
-router.get("/restaurants", async (req, res) => {
-  let username = req?.username;
-  let response = await getCartRestaurant({ username });
   res.json(response);
 });
 
