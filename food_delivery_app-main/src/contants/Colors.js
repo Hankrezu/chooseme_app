@@ -25,10 +25,9 @@ export default {
   
   YELLOW:'#FFFDDB',
   BROWN: '#3C2716',
-  PEACH:'#FFBE98',
-  LIGHT_GREY3:'#F0F0F0',
-  PEACH:'#FFBE98',
-  CYAN:'#77E2E1',
+  LIGHT_GREY3:'#F0F0F0',// background
+  PEACH:'#FFBE98',// màu chính
+  CYAN:'#77E2E1',//màu nhấn chung với màu trắng
   GREY:'#D9D9D9',
-  LIGHT_PEACH:'#FFCEB2',
+  LIGHT_PEACH:'#FFCEB2',//màu white chồng lên peach với opacity 25%
 };

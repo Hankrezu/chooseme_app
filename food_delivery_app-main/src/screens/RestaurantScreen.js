@@ -81,7 +81,6 @@ const RestaurantScreen = ({
         item => item?.restaurantId === restaurantId,
       )?.length > 0,
   );
-  console.log('isBookmarked:', isBookmarked);
   const addBookmark = () =>
     dispatch(BookmarkAction.addBookmark({restaurantId}));
   const removeBookmark = () =>

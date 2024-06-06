@@ -54,6 +54,11 @@ const getBookmarks = async ({ username }) => {
           },
         },
         {
+          $addFields: {
+            restaurantId: { $toObjectId: "$restaurantId" },
+          },
+        },
+        {
           $lookup: {
             from: "restaurants",
             localField: "restaurantId",
@@ -68,6 +73,7 @@ const getBookmarks = async ({ username }) => {
         },
       ])
       .toArray();
+      console.log(username)
     if (bookmarks?.length > 0) {
       return {
         status: true,
