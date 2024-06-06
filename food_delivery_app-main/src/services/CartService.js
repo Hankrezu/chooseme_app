@@ -121,4 +121,33 @@ const getCartRestaurant = async () => {
   }
 };
 
-export default {getCartItems, addToCart, removeFromCart,getCartRestaurant};
+const getCartItemsByRestaurant = async (restaurantId) => {
+  console.log('CartService | getCartItemsByRestaurant');
+  try {
+    let response = await axios.get(
+      `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.CART}/${restaurantId}`,
+      {
+        headers: authHeader(getToken()),
+      },
+    );
+    if (response?.status === 200) {
+      return {
+        status: true,
+        message: 'Cart data fetched',
+        data: response?.data?.data,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Cart data not found',
+      };
+    }
+  } catch (error) {
+    return {
+      status: false,
+      message: 'Cart data not found',
+    };
+  }
+};
+
+export default {getCartItems, addToCart, removeFromCart, getCartRestaurant, getCartItemsByRestaurant};

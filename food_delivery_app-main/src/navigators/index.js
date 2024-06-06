@@ -16,6 +16,7 @@ import {
   AccountScreen,
   ModifyScreen,
   OrderScreen,
+  CartScreen,
 } from '../screens';
 import HomeTabs from './BottomTabs';
 import {useSelector, useDispatch} from 'react-redux';
@@ -64,6 +65,8 @@ const Navigators = () => {
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Modify" component={ModifyScreen}/>
             <Stack.Screen name="Order" component={OrderScreen}/>
+            <Stack.Screen name="Cart" component={CartScreen}/>
+
             
           </>
         )}

@@ -14,7 +14,7 @@ import { CartService } from '../services';
 
 const OrderScreen = ({ navigation }) => {
   const [restaurants, setRestaurants] = useState([]);
-
+  
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       CartService.getCartRestaurant().then(response => {
@@ -61,7 +61,6 @@ const OrderScreen = ({ navigation }) => {
       </View>
       <View>
         <FlatList
-         
           data={restaurants}
           keyExtractor={(item, index) => `${item._id}_${index}`}
           showsVerticalScrollIndicator={false}
@@ -71,7 +70,7 @@ const OrderScreen = ({ navigation }) => {
             <RestaurantCard
               {...item}
               navigate={restaurantId =>
-                navigation.navigate('Restaurant', { restaurantId })
+                navigation.navigate('Cart', { restaurantId })
               }
             />
           )}

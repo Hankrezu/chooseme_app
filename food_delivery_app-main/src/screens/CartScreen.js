@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Modal,
+  Modal
 } from 'react-native';
 import {Colors, Fonts, Images} from '../contants';
 import {FoodCard, Separator} from '../components';
@@ -15,39 +15,46 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Display} from '../utils';
-import {useSelector} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
+import { CartAction } from '../actions';
 import UserService from '../services/UserService';
 
-const CartScreen = ({navigation}) => {
+const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
 
   const [visible, setVisible] = useState(false);
-  const [phoneNumber,setPhoneNumber] = useState()
-  
-  const hide = ()=> setVisible(false);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const hide = () => setVisible(false);
 
+  const dispatch = useDispatch();
   const cart = useSelector(state => state?.cartState?.cart);
+  const cartItemsByRestaurant = useSelector(state => state?.cartState?.cartItemsByRestaurant);
+  
+  // console.log(cart,restaurantId)
+
+  useEffect(() => {
+    // Dispatch actions to get cart items and cart restaurant data
+    dispatch(CartAction.getCartItems());
+    dispatch(CartAction.getCartRestaurant());
+    // Dispatch action to get cart items by restaurant
+    if (restaurantId) {
+      dispatch(CartAction.getCartItemsByRestaurant(restaurantId));
+    }
+  }, [dispatch, restaurantId]);
 
   const isPhoneNumber = async () => {
-    setVisible(true) 
-    // let user = {
-    //   phone
-    // };
-    try { 
-      let response = await UserService.getUserData();  
+    setVisible(true);
+    try {
+      let response = await UserService.getUserData();
       let userData = response.data;
-      console.log(userData.data.phone)
-        if (userData.data.phone) {
-          console.log('Phone number exists')
-          setPhoneNumber(userData.data.phone)
-        } else {
-          console.log('Phone number does not exists')
-          
-          return {
-            status: false,
-            message: 'Phone number does not exist',
-          };
-        
-      } 
+      if (userData.data.phone) {
+        setPhoneNumber(userData.data.phone);
+      } else {
+        console.log('Phone number does not exist');
+        return {
+          status: false,
+          message: 'Phone number does not exist',
+        };
+      }
     } catch (error) {
       return {
         status: false,
@@ -72,11 +79,11 @@ const CartScreen = ({navigation}) => {
         />
         <Text style={styles.headerTitle}>My Cart</Text>
       </View>
-      {cart?.cartItems?.length > 0 ? (
+      {cartItemsByRestaurant?.cartItems?.length > 0 ? (
         <>
           <ScrollView>
             <View style={styles.foodList}>
-              {cart?.cartItems?.map(item => (
+              {cartItemsByRestaurant?.cartItems?.map(item => (
                 <FoodCard
                   {...item?.food}
                   key={item?.food?.id}
@@ -101,13 +108,13 @@ const CartScreen = ({navigation}) => {
               <View style={styles.amountSubContainer}>
                 <Text style={styles.amountLabelText}>Item Total</Text>
                 <Text style={styles.amountText}>
-                  $ {cart?.metaData?.itemsTotal?.toFixed(2)}
+                  $ {cartItemsByRestaurant?.metaData?.itemsTotal?.toFixed(2)}
                 </Text>
               </View>
               <View style={styles.amountSubContainer}>
                 <Text style={styles.amountLabelText}>Discount</Text>
                 <Text style={styles.amountText}>
-                  $ {cart?.metaData?.discount?.toFixed(2)}
+                  $ {cartItemsByRestaurant?.metaData?.discount?.toFixed(2)}
                 </Text>
               </View>
               <View style={styles.amountSubContainer}>
@@ -121,7 +128,7 @@ const CartScreen = ({navigation}) => {
             <View style={styles.totalContainer}>
               <Text style={styles.totalText}>Total</Text>
               <Text style={styles.totalText}>
-                $ {cart?.metaData?.grandTotal?.toFixed(2)}
+                $ {cartItemsByRestaurant?.metaData?.grandTotal?.toFixed(2)}
               </Text>
             </View>
             <TouchableOpacity onPress={isPhoneNumber} style={styles.checkoutButton}>
@@ -158,20 +165,16 @@ const CartScreen = ({navigation}) => {
           <Separator height={Display.setHeight(15)} />
         </View>
       )}
-
-
       <Modal animationType='fade' transparent={true} visible={visible} onRequestClose={hide}>
-        <View style={styles.lower}> 
+        <View style={styles.lower}>
           <View style={styles.modalContent}>
-            { phoneNumber != null
-            ? <Text style={{fontSize:12}} onPress={hide}>HavePhoneNumber</Text> 
-            : <Text style={{fontSize:12}} onPress={hide}>DontHavePhoneNumber</Text> 
-            }        
+            {phoneNumber != null
+              ? <Text style={{ fontSize: 12 }} onPress={hide}>HavePhoneNumber</Text>
+              : <Text style={{ fontSize: 12 }} onPress={hide}>DontHavePhoneNumber</Text>
+            }
           </View>
-        </View> 
+        </View>
       </Modal>
-
-      
     </View>
   );
 };
@@ -198,7 +201,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: 'white',  // Optional: sets text color to white for better visibility
   },
-
   container: {
     flex: 1,
     backgroundColor: Colors.DEFAULT_WHITE,
