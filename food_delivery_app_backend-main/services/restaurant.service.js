@@ -32,36 +32,99 @@ const getAllRestaurant = async () => {
 };
 
 const getOneRestaurantById = async (restaurantId) => {
-  try{
+  try {
     let restaurant = await MongoDB.db
       .collection(mongoConfig.collections.RESTAURANTS)
       .aggregate([
         {
           $match: {
-            _id: ObjectId(restaurantId),
+            _id: ObjectId(restaurantId), // Ensure the restaurantId is an ObjectId
           },
         },
         {
           $lookup: {
             from: "foods",
-            localField: "_id",
-            foreignField: "restaurantId",
+            let: { restaurantId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$restaurantId", { $toString: "$$restaurantId" }],
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: "categories",
+                  let: { categoryIds: "$categories" },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $in: ["$_id", { $map: { input: "$$categoryIds", as: "categoryId", in: { $toObjectId: "$$categoryId" } } }]
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        _id: 0,
+                        name: 1,
+                      },
+                    },
+                  ],
+                  as: "categoryNames",
+                },
+              },
+              {
+                $addFields: {
+                  categories: "$categoryNames.name",
+                },
+              },
+              {
+                $project: {
+                  categoryNames: 0,
+                },
+              },
+            ],
             as: "foods",
+          },
+        },
+        {
+          $lookup: {
+            from: "categories",
+            let: { categoryIds: "$categories" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $in: ["$_id", { $map: { input: "$$categoryIds", as: "categoryId", in: { $toObjectId: "$$categoryId" } } }]
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                  name: 1,
+                },
+              },
+            ],
+            as: "categoryNames",
+          },
+        },
+        {
+          $addFields: {
+            categories: "$categoryNames.name",
+          },
+        },
+        {
+          $project: {
+            categoryNames: 0,
           },
         },
       ])
       .toArray();
-
+      
     if (restaurant && restaurant?.length > 0) {
-      let categoryNames = restaurant[0]["categories"].map(async(categoryId) =>  {
-        let categoriyDetail = await MongoDB.db
-          .collection(mongoConfig.collections.CATEGORIES)
-          .findOne({ _id: ObjectId(categoryId)})
-        return categoriyDetail["name"]
-      })
-
-      restaurant[0]["categories"] = await Promise.all(categoryNames)
-
       return {
         status: true,
         message: "Restaurant found successfully",
@@ -81,6 +144,5 @@ const getOneRestaurantById = async (restaurantId) => {
     };
   }
 };
-
 
 module.exports = { getAllRestaurant, getOneRestaurantById };

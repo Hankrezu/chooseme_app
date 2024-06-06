@@ -69,11 +69,12 @@ const RestaurantScreen = ({
     RestaurantService.getOneRestaurantById(restaurantId).then(response => {
       setSelectedCategory(response?.data?.categories[0]);
       setRestaurant(response?.data);
-      // console.log(response?.data)
+      console.log(response?.data)
     });
   }, []);
   // console.log(restaurantId)
   // console.log(restaurant?.images?.cover)
+   console.log(restaurant)
   const dispatch = useDispatch();
   const isBookmarked = useSelector(
     state =>
@@ -168,19 +169,19 @@ const RestaurantScreen = ({
               />
             </View>
             <View style={styles.foodList}>
-              {restaurant?.foods
-                ?.filter(food => food?.category === selectedCategory)
-                ?.map(item => (
-                  <FoodCard
-                    key={item?.id}
-                    {...item}
-                    navigate={() =>
-                      navigation.navigate('Food', {foodId: item?.id})
-                    }
-                  />
-                ))}
-              <Separator height={Display.setHeight(2)} />
-            </View>
+        {restaurant?.foods
+          ?.filter((food) =>
+            selectedCategory ? food?.categories.includes(selectedCategory) : true
+          )
+          ?.map((item) => (
+            <FoodCard
+              key={item?._id}
+              {...item}
+              navigate={() => navigation.navigate('Food', { foodId: item?._id })}
+            />
+          ))}
+        <Separator height={Display.setHeight(2)} />
+      </View>
           </View>
         </ScrollView>
       </>
