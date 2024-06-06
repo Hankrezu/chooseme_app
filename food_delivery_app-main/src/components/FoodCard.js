@@ -8,11 +8,11 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {CartAction} from '../actions';
 
-const FoodCard = ({id, name, description,restaurantId, price, image, navigate}) => {
+const FoodCard = ({_id, name, description,restaurantId, price, image, navigate}) => {
   const dispatch = useDispatch();
   const itemCount = useSelector(
     state =>
-      state?.cartState?.cart?.cartItems?.find(item => item?.foodId === id)
+      state?.cartState?.cart?.cartItems?.find(item => item?.foodId === _id)
         ?.count,
   );
   const addToCart = (foodId, restaurantId) => dispatch(CartAction.addToCart({ foodId, restaurantId }));
@@ -24,12 +24,7 @@ const FoodCard = ({id, name, description,restaurantId, price, image, navigate}) 
       <TouchableOpacity onPress={() => navigate()} activeOpacity={0.8}>
         <Image
           style={styles.image}
-          source={{
-            uri: StaticImageService.getGalleryImage(
-              image,
-              ApiContants.STATIC_IMAGE.SIZE.SQUARE,
-            ),
-          }}
+          source={{ uri: image }}
         />
       </TouchableOpacity>
       <View style={styles.detailsContainer}>
@@ -50,7 +45,7 @@ const FoodCard = ({id, name, description,restaurantId, price, image, navigate}) 
                   name="minus"
                   color={Colors.DEFAULT_YELLOW}
                   size={18}
-                  onPress={() => removeFromCart(id)}
+                  onPress={() => removeFromCart(_id)}
                 />
                 <Text style={styles.itemCountText}>{itemCount}</Text>
               </>
@@ -60,7 +55,7 @@ const FoodCard = ({id, name, description,restaurantId, price, image, navigate}) 
               name="plus"
               color={Colors.DEFAULT_YELLOW}
               size={18}
-              onPress={() => addToCart(id, restaurantId)}
+              onPress={() => addToCart(_id, restaurantId)}
             />
           </View>
         </View>

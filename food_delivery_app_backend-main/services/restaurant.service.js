@@ -32,19 +32,19 @@ const getAllRestaurant = async () => {
 };
 
 const getOneRestaurantById = async (restaurantId) => {
-  try {
+  try{
     let restaurant = await MongoDB.db
       .collection(mongoConfig.collections.RESTAURANTS)
       .aggregate([
         {
           $match: {
-            id: restaurantId,
+            _id: ObjectId(restaurantId),
           },
         },
         {
           $lookup: {
             from: "foods",
-            localField: "id",
+            localField: "_id",
             foreignField: "restaurantId",
             as: "foods",
           },
@@ -56,8 +56,8 @@ const getOneRestaurantById = async (restaurantId) => {
       let categoryNames = restaurant[0]["categories"].map(async(categoryId) =>  {
         let categoriyDetail = await MongoDB.db
           .collection(mongoConfig.collections.CATEGORIES)
-          .findOne({ _id: ObjectId(categoryId )})
-        return categoriyDetail["category"]
+          .findOne({ _id: ObjectId(categoryId)})
+        return categoriyDetail["name"]
       })
 
       restaurant[0]["categories"] = await Promise.all(categoryNames)

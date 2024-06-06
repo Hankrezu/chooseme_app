@@ -8,12 +8,12 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 import {CartAction} from '../actions';
 
-const HomeFoodCard = ({id, name, description, price,
+const HomeFoodCard = ({_id, name, description, price,
   restaurantId, image, navigate}) => {
   const dispatch = useDispatch();
   const itemCount = useSelector(
     state =>
-      state?.cartState?.cart?.cartItems?.find(item => item?.foodId === id)
+      state?.cartState?.cart?.cartItems?.find(item => item?.foodId === _id)
         ?.count,
   );
   const addToCart = foodId => dispatch(CartAction.addToCart({foodId}));
@@ -24,12 +24,7 @@ const HomeFoodCard = ({id, name, description, price,
       <TouchableOpacity onPress={() => navigate()} activeOpacity={0.8}>
         <Image
           style={styles.image}
-          source={{
-            uri: StaticImageService.getGalleryImage(
-              image,
-              ApiContants.STATIC_IMAGE.SIZE.SQUARE,
-            ),
-          }}
+          source={{ uri: image }}
         />
       </TouchableOpacity>
       <View style={styles.detailsContainer}>
