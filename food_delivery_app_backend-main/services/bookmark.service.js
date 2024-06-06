@@ -57,7 +57,7 @@ const getBookmarks = async ({ username }) => {
           $lookup: {
             from: "restaurants",
             localField: "restaurantId",
-            foreignField: "id",
+            foreignField: "_id",
             as: "restaurant",
           },
         },

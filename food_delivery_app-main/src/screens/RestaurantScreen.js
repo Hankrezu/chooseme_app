@@ -69,9 +69,11 @@ const RestaurantScreen = ({
     RestaurantService.getOneRestaurantById(restaurantId).then(response => {
       setSelectedCategory(response?.data?.categories[0]);
       setRestaurant(response?.data);
+      // console.log(response?.data)
     });
   }, []);
-
+  // console.log(restaurantId)
+  // console.log(restaurant?.images?.cover)
   const dispatch = useDispatch();
   const isBookmarked = useSelector(
     state =>
@@ -79,6 +81,7 @@ const RestaurantScreen = ({
         item => item?.restaurantId === restaurantId,
       )?.length > 0,
   );
+  console.log('isBookmarked:', isBookmarked);
   const addBookmark = () =>
     dispatch(BookmarkAction.addBookmark({restaurantId}));
   const removeBookmark = () =>
@@ -89,12 +92,7 @@ const RestaurantScreen = ({
       <StatusBar barStyle="default" translucent backgroundColor="transparent" />
       <>
         <Image
-          source={{
-            uri: StaticImageService.getGalleryImage(
-              restaurant?.images?.cover,
-              ApiContants.STATIC_IMAGE.SIZE.SQUARE,
-            ),
-          }}
+          source={{uri:restaurant?.images?.cover}}
           style={styles.backgroundImage}
         />
         <ScrollView>

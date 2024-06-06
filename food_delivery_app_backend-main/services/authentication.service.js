@@ -10,7 +10,7 @@ const userRegister = async (user) => {
       return { status: false, message: "Please fill up all the fields" };
     const passwordHash = await bcrypt.hash(user?.password, 10);
     let userObject = {
-      username: user?.username,
+      name: user?.username,  // Mapping username to name for storage
       email: user?.email,
       password: passwordHash,
       phone: "",
@@ -21,7 +21,7 @@ const userRegister = async (user) => {
       .insertOne(userObject);
     if (savedUser?.acknowledged && savedUser?.insertedId) {
       let token = jwt.sign(
-        { username: userObject?.username, email: userObject?.email },
+        { name: userObject?.name, email: userObject?.email },
         tokenSecret,
         { expiresIn: "24h" }
       );
@@ -33,17 +33,17 @@ const userRegister = async (user) => {
     } else {
       return {
         status: false,
-        message: "User registered failed",
+        message: "User registration failed",
       };
     }
   } catch (error) {
     console.log(error);
-    let errorMessage = "User registered failed";
-    error?.code === 11000 && error?.keyPattern?.username
-      ? (errorMessage = "Username already exist")
+    let errorMessage = "User registration failed";
+    error?.code === 11000 && error?.keyPattern?.name
+      ? (errorMessage = "Username already exists")
       : null;
     error?.code === 11000 && error?.keyPattern?.email
-      ? (errorMessage = "Email already exist")
+      ? (errorMessage = "Email already exists")
       : null;
     return {
       status: false,
@@ -59,15 +59,15 @@ const userLogin = async (user) => {
       return { status: false, message: "Please fill up all the fields" };
     let userObject = await MongoDB.db
       .collection(mongoConfig.collections.USERS)
-      .findOne({ username: user?.username });
+      .findOne({ name: user?.username }); // Querying by name
     if (userObject) {
-      let isPasswordVerfied = await bcrypt.compare(
+      let isPasswordVerified = await bcrypt.compare(
         user?.password,
         userObject?.password
       );
-      if (isPasswordVerfied) {
+      if (isPasswordVerified) {
         let token = jwt.sign(
-          { username: userObject?.username, email: userObject?.email },
+          { name: userObject?.name, email: userObject?.email },
           tokenSecret,
           { expiresIn: "24h" }
         );
@@ -100,8 +100,8 @@ const userLogin = async (user) => {
 
 const checkUserExist = async (query) => {
   let messages = {
-    email: "User already exist",
-    username: "This username is taken",
+    email: "User already exists",
+    name: "This username is taken",
   };
   try {
     let queryType = Object.keys(query)[0];
@@ -137,7 +137,7 @@ const tokenVerification = async (req, res, next) => {
             error: `Invalid token | ${error?.message}`,
           });
         } else {
-          req["username"] = decoded?.username;
+          req["username"] = decoded?.name; // Mapping name to username for request
           next();
         }
       });
@@ -175,9 +175,9 @@ const tokenRefresh = async (req, res) => {
               error: `Invalid token | ${error?.message}`,
             });
           } else {
-            if (decoded?.username && decoded?.email) {
+            if (decoded?.name && decoded?.email) {
               let newToken = jwt.sign(
-                { username: decoded?.username, email: decoded?.email },
+                { name: decoded?.name, email: decoded?.email },
                 tokenSecret,
                 { expiresIn: "24h" }
               );
