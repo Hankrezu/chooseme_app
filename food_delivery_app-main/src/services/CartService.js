@@ -93,4 +93,66 @@ const removeFromCart = async ({foodId}) => {
   }
 };
 
-export default {getCartItems, addToCart, removeFromCart};
+const getCartRestaurant = async () => {
+  console.log('CartService | getCartRestaurant');
+  try {
+    let response = await axios.get(
+      `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.CART}/restaurants`,
+      {
+        headers: authHeader(getToken()),
+      },
+    );
+    if (response?.status === 200) {
+      return {
+        status: true,
+        message: 'Cart restaurants fetched successfully',
+        data: response?.data?.data,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Cart restaurants not found',
+      };
+    }
+  } catch (error) {
+    console.error('Error in getCartRestaurant:', error?.response || error);
+    return {
+      status: false,
+      message: 'Failed to fetch cart restaurants',
+    };
+  }
+};
+
+
+const getCartItemsByRestaurant = async (restaurantId) => {
+  console.log('CartService | getCartItemsByRestaurant');
+  try {
+    let response = await axios.get(
+      `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.CART}/${restaurantId}`,
+      {
+        headers: authHeader(getToken()),
+      },
+    );
+    if (response?.status === 200) {
+      return {
+        status: true,
+        message: 'Cart items fetched successfully',
+        data: response?.data?.data,
+      };
+    } else {
+      return {
+        status: false,
+        message: 'Cart items not found',
+      };
+    }
+  } catch (error) {
+    console.error('Error in getCartItemsByRestaurant:', error?.response || error);
+    return {
+      status: false,
+      message: 'Failed to fetch cart items',
+    };
+  }
+};
+
+
+export default {getCartItems, addToCart, removeFromCart, getCartRestaurant, getCartItemsByRestaurant};

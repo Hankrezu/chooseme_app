@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   AccountScreen,
   BookmarkScreen,
-  CartScreen,
+  OrderScreen,
   HomeScreen,
 } from '../screens';
 import { View, StyleSheet } from 'react-native';
@@ -54,8 +54,8 @@ export default () => (
       }}
     />
     <BottomTabs.Screen
-      name="Cart"
-      component={CartScreen}
+      name="Order"
+      component={OrderScreen}
       options={{
         tabBarIcon: ({ focused }) => (
           focused ? <SELECTED_CARTICON/>:<CARTICON/>
