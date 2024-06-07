@@ -7,40 +7,56 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Modal
+  Modal,
+  Alert,
 } from 'react-native';
-import {Colors, Fonts, Images} from '../contants';
-import {FoodCard, Separator} from '../components';
+import { Colors, Fonts, Images } from '../contants';
+import { FoodCard, Separator } from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Display} from '../utils';
-import {useSelector,useDispatch} from 'react-redux';
+import { Display } from '../utils';
+import { useSelector, useDispatch } from 'react-redux';
 import { CartAction } from '../actions';
 import UserService from '../services/UserService';
+import OrderService from '../services/OrderService';
 
-const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
+const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
 
   const [visible, setVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const hide = () => setVisible(false);
 
+  const[username,setUsername]=useState()
   const dispatch = useDispatch();
   const cart = useSelector(state => state?.cartState?.cart);
   const cartItemsByRestaurant = useSelector(state => state?.cartState?.cartItemsByRestaurant);
 
-  
-  console.log(restaurantId)
-
   useEffect(() => {
-    // Dispatch actions to get cart items and cart restaurant data
     dispatch(CartAction.getCartItems());
     dispatch(CartAction.getCartRestaurant());
-    // Dispatch action to get cart items by restaurant
     if (restaurantId) {
       dispatch(CartAction.getCartItemsByRestaurant(restaurantId));
     }
   }, [dispatch, restaurantId]);
+
+  useEffect(()=>{
+    const getData = async () => {
+      try { 
+        let response = await UserService.getUserData();  
+        let userData = response.data;
+        setUsername(userData.data.name) 
+      } catch (error) {
+        return {
+          status: false,
+          message: `${error?.message}`,
+        };
+      }
+    };
+    getData()
+  },[])
+
+  console.log(username,restaurantId)
 
   const isPhoneNumber = async () => {
     setVisible(true);
@@ -61,6 +77,22 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
         status: false,
         message: `Error checking phone number: ${error?.message}`,
       };
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      const response = await OrderService.createOrder({ username,restaurantId });
+      console.log(response)
+      if (response.status) {
+        await OrderService.removeCartItems({ username,restaurantId });
+        navigation.goBack();
+      } else {
+        Alert.alert("Order Error", response.message);
+      }
+    } catch (error) {
+      console.error("Checkout Error: ", error);
+      Alert.alert("Checkout Error", "There was an error processing your checkout. Please try again.");
     }
   };
 
@@ -89,7 +121,7 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
                   {...item?.food}
                   key={item?.food?._id}
                   navigate={() =>
-                    navigation.navigate('Food', {foodId: item?.id})
+                    navigation.navigate('Food', { foodId: item?.id })
                   }
                 />
               ))}
@@ -121,7 +153,7 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
               <View style={styles.amountSubContainer}>
                 <Text style={styles.amountLabelText}>Delivery Fee</Text>
                 <Text
-                  style={{...styles.amountText, color: Colors.DEFAULT_GREEN}}>
+                  style={{ ...styles.amountText, color: Colors.DEFAULT_GREEN }}>
                   Free
                 </Text>
               </View>
@@ -132,7 +164,7 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
                 $ {cartItemsByRestaurant?.metaData?.grandTotal?.toFixed(2)}
               </Text>
             </View>
-            <TouchableOpacity onPress={isPhoneNumber} style={styles.checkoutButton}>
+            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               <View style={styles.rowAndCenter}>
                 <Ionicons
                   name="cart-outline"
@@ -166,7 +198,7 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
           <Separator height={Display.setHeight(15)} />
         </View>
       )}
-      <Modal animationType='fade' transparent={true} visible={visible} onRequestClose={hide}>
+      {/* <Modal animationType='fade' transparent={true} visible={visible} onRequestClose={hide}>
         <View style={styles.lower}>
           <View style={styles.modalContent}>
             {phoneNumber != null
@@ -175,16 +207,15 @@ const CartScreen = ({navigation,route: { params: { restaurantId } } }) => {
             }
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  fill:{flex:1},
-  upper:{height:100, backgroundColor:'#DDD', opacity:.5},
-  lower:
-  {
+  fill: { flex: 1 },
+  upper: { height: 100, backgroundColor: '#DDD', opacity: .5 },
+  lower: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -193,14 +224,13 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,  // Optional: adds rounded corners
-    height:Display.setHeight(30),
-    width:Display.setWidth(90)
-    
+    borderRadius: 10,
+    height: Display.setHeight(30),
+    width: Display.setWidth(90)
   },
   hideText: {
     fontSize: 50,
-    color: 'white',  // Optional: sets text color to white for better visibility
+    color: 'white',
   },
   container: {
     flex: 1,
@@ -237,105 +267,90 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.POPPINS_MEDIUM,
     lineHeight: 15 * 1.4,
     color: Colors.DEFAULT_BLACK,
-    marginLeft: 10,
-  },
-  rowAndCenter: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   amountContainer: {
     marginHorizontal: Display.setWidth(4),
-    paddingVertical: 20,
+    paddingVertical: 15,
+    marginTop: 10,
+    borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
   },
   amountSubContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 3,
+    marginVertical: 10,
   },
   amountLabelText: {
-    fontSize: 15,
-    fontFamily: Fonts.POPPINS_SEMI_BOLD,
-    lineHeight: 15 * 1.4,
-    color: Colors.DEFAULT_GREEN,
+    fontSize: 16,
+    fontFamily: Fonts.POPPINS_MEDIUM,
+    color: Colors.DEFAULT_BLACK,
   },
   amountText: {
-    fontSize: 15,
-    fontFamily: Fonts.POPPINS_SEMI_BOLD,
-    lineHeight: 15 * 1.4,
+    fontSize: 16,
+    fontFamily: Fonts.POPPINS_MEDIUM,
     color: Colors.DEFAULT_BLACK,
   },
   totalContainer: {
-    marginHorizontal: Display.setWidth(4),
-    paddingVertical: 15,
-    borderBottomWidth: 0.5,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginHorizontal: Display.setWidth(4),
+    marginVertical: 10,
   },
   totalText: {
-    fontSize: 20,
-    fontFamily: Fonts.POPPINS_SEMI_BOLD,
-    lineHeight: 20 * 1.4,
+    fontSize: 18,
+    fontFamily: Fonts.POPPINS_BOLD,
     color: Colors.DEFAULT_BLACK,
   },
   checkoutButton: {
     flexDirection: 'row',
-    width: Display.setWidth(80),
-    backgroundColor: Colors.DEFAULT_GREEN,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 10,
-    height: Display.setHeight(7),
-    marginTop: 10,
+    marginHorizontal: Display.setWidth(4),
+    backgroundColor: Colors.DEFAULT_GREEN,
+    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginVertical: 10,
   },
   checkoutText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: Fonts.POPPINS_MEDIUM,
-    lineHeight: 16 * 1.4,
     color: Colors.DEFAULT_WHITE,
-    marginLeft: 8,
   },
   emptyCartContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.DEFAULT_WHITE,
+  },
+  emptyCartImage: {
+    height: Display.setHeight(20),
+    width: Display.setWidth(50),
   },
   emptyCartText: {
-    fontSize: 30,
-    fontFamily: Fonts.POPPINS_LIGHT,
-    lineHeight: 30 * 1.4,
-    color: Colors.DEFAULT_GREEN,
+    fontSize: 20,
+    fontFamily: Fonts.POPPINS_MEDIUM,
+    color: Colors.DEFAULT_BLACK,
+    marginTop: 10,
   },
   emptyCartSubText: {
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: Fonts.POPPINS_MEDIUM,
-    lineHeight: 12 * 1.4,
     color: Colors.INACTIVE_GREY,
+    marginVertical: 10,
   },
   addButtonEmpty: {
     flexDirection: 'row',
-    backgroundColor: Colors.DEFAULT_YELLOW,
-    borderRadius: 8,
-    paddingHorizontal: Display.setWidth(4),
-    paddingVertical: 5,
-    marginTop: 10,
-    justifyContent: 'space-evenly',
-    elevation: 3,
     alignItems: 'center',
+    backgroundColor: Colors.DEFAULT_GREEN,
+    padding: 10,
+    borderRadius: 8,
   },
   addButtonEmptyText: {
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: Fonts.POPPINS_MEDIUM,
-    lineHeight: 12 * 1.4,
     color: Colors.DEFAULT_WHITE,
     marginLeft: 10,
-  },
-  emptyCartImage: {
-    height: Display.setWidth(60),
-    width: Display.setWidth(60),
   },
 });
 

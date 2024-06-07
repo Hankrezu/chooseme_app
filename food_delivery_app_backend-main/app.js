@@ -11,7 +11,8 @@ var restaurantRouter = require("./routes/restaurant.route");
 var cartRouter = require("./routes/cart.route");
 var foodRouter = require("./routes/food.route");
 var bookmarkRouter = require("./routes/bookmark.route");
-var categoryRouter = require("./routes/category.route")
+var categoryRouter = require("./routes/category.route");
+var orderRouter = require("./routes/order.route");// Add orderRouter
 const MongoDB = require("./services/mongodb.service");
 
 MongoDB.connectToMongoDB();
@@ -38,6 +39,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/food", foodRouter);
 app.use("/api/bookmark", bookmarkRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/order", orderRouter);// add orderRouter
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -46,11 +48,9 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
   res.status(err.status || 500);
   res.render("error");
 });
