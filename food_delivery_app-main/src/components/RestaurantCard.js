@@ -39,7 +39,7 @@ const RestaurantCard = ({
         onPress={() => (isBookmarked ? removeBookmark() : addBookmark())}
       />
       <Image
-        source={{uri: StaticImageService.getPoster(poster)}}
+        source={{ uri: poster }}
         style={styles.posterStyle}
       />
       <Text style={styles.titleText}>{name}</Text>
