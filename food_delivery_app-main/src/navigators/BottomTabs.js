@@ -1,17 +1,25 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   AccountScreen,
   BookmarkScreen,
   OrderScreen,
   HomeScreen,
 } from '../screens';
+import { View, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Display} from '../utils';
-import {Colors} from '../contants';
+import { Display } from '../utils';
+import { Colors } from '../contants';
+import USERICON from '../assets/SVG/USERICON';
+import SELECTED_USERICON from '../assets/SVG/SELECTED_USERICON';
+import SELECTED_BOOKMARKICON from '../assets/SVG/SELECTED_BOOKMARKICON';
+import HOMEICON from '../assets/SVG/HOMEICON';
+import SELECTED_HOMEICON from '../assets/SVG/SELECTED_HOMEICON';
+import BOOKMARKICON from '../assets/SVG/BOOKMARKICON';
+import SELECTED_CARTICON from '../assets/SVG/SELECTED_CARTICON';
+import CARTICON from '../assets/SVG/CARTICON';
 
 const BottomTabs = createBottomTabNavigator();
-
 export default () => (
   <BottomTabs.Navigator
     screenOptions={{
@@ -26,13 +34,13 @@ export default () => (
       tabBarActiveTintColor: Colors.DEFAULT_GREEN,
       tabBarInactiveTintColor: Colors.INACTIVE_GREY,
     }}
-    op>
+  >
     <BottomTabs.Screen
       name="Home"
       component={HomeScreen}
       options={{
-        tabBarIcon: ({color}) => (
-          <Ionicons name="home-outline" size={23} color={color} />
+        tabBarIcon: ({ focused }) => (
+          focused ? <SELECTED_HOMEICON/>:<HOMEICON/>
         ),
       }}
     />
@@ -40,8 +48,8 @@ export default () => (
       name="Bookmark"
       component={BookmarkScreen}
       options={{
-        tabBarIcon: ({color}) => (
-          <Ionicons name="bookmark-outline" size={23} color={color} />
+        tabBarIcon: ({ focused }) => (
+          focused ? <SELECTED_BOOKMARKICON/>:<BOOKMARKICON/>
         ),
       }}
     />
@@ -49,8 +57,8 @@ export default () => (
       name="Order"
       component={OrderScreen}
       options={{
-        tabBarIcon: ({color}) => (
-          <Ionicons name="cart-outline" size={23} color={color} />
+        tabBarIcon: ({ focused }) => (
+          focused ? <SELECTED_CARTICON/>:<CARTICON/>
         ),
       }}
     />
@@ -58,8 +66,8 @@ export default () => (
       name="Account"
       component={AccountScreen}
       options={{
-        tabBarIcon: ({color}) => (
-          <Ionicons name="person-outline" size={23} color={color} />
+        tabBarIcon: ({ focused }) => (
+          focused ? <SELECTED_USERICON/> : <USERICON/>
         ),
       }}
     />
