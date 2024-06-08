@@ -3,7 +3,7 @@ import {TouchableOpacity, Animated, StyleSheet, Easing} from 'react-native';
 import {Colors} from '../contants';
 
 const containerStyle = (size, isActive) => ({
-  backgroundColor: isActive ? Colors.DEFAULT_GREEN : Colors.DEFAULT_GREY,
+  backgroundColor: isActive ? Colors.PEACH : Colors.DEFAULT_GREY,
   height: 32 * size,
   width: 64 * size,
   borderRadius: 32,

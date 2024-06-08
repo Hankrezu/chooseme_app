@@ -37,7 +37,7 @@ const FoodCard = ({_id, name, description,restaurantId, price, image, navigate})
           </Text>
         </TouchableOpacity>
         <View style={styles.footerContainer}>
-          <Text style={styles.priceText}>$ {price}</Text>
+          <Text style={styles.priceText}> {price} đ</Text>
           <View style={styles.itemAddContainer}>
             {itemCount > 0 ? (
               <>

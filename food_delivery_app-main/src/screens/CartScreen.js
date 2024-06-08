@@ -49,7 +49,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
       } catch (error) {
         return {
           status: false,
-          message: `${error?.message}`,
+          message: `{error?.message}`,
         };
       }
     };
@@ -75,7 +75,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
     } catch (error) {
       return {
         status: false,
-        message: `Error checking phone number: ${error?.message}`,
+        message: `Error checking phone number: {error?.message}`,
       };
     }
   };
@@ -100,7 +100,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
     <View style={styles.container}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={Colors.DEFAULT_WHITE}
+        backgroundColor={Colors.PEACH}
         translucent
       />
       <Separator height={StatusBar.currentHeight} />
@@ -121,7 +121,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
                   {...item?.food}
                   key={item?.food?._id}
                   navigate={() =>
-                    navigation.navigate('Food', { foodId: item?.id })
+                    navigation.navigate('Food', { foodId: item?._id })
                   }
                 />
               ))}
@@ -141,13 +141,13 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
               <View style={styles.amountSubContainer}>
                 <Text style={styles.amountLabelText}>Item Total</Text>
                 <Text style={styles.amountText}>
-                  $ {cartItemsByRestaurant?.metaData?.itemsTotal?.toFixed(2)}
+                   {cartItemsByRestaurant?.metaData?.itemsTotal?.toFixed(2)} đ
                 </Text>
               </View>
               <View style={styles.amountSubContainer}>
                 <Text style={styles.amountLabelText}>Discount</Text>
                 <Text style={styles.amountText}>
-                  $ {cartItemsByRestaurant?.metaData?.discount?.toFixed(2)}
+                   {cartItemsByRestaurant?.metaData?.discount?.toFixed(2)} đ
                 </Text>
               </View>
               <View style={styles.amountSubContainer}>
@@ -161,7 +161,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
             <View style={styles.totalContainer}>
               <Text style={styles.totalText}>Total</Text>
               <Text style={styles.totalText}>
-                $ {cartItemsByRestaurant?.metaData?.grandTotal?.toFixed(2)}
+                 {cartItemsByRestaurant?.metaData?.grandTotal?.toFixed(2)} đ
               </Text>
             </View>
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
@@ -174,7 +174,7 @@ const CartScreen = ({ navigation, route: { params: { restaurantId } } }) => {
                 <Text style={styles.checkoutText}>Checkout</Text>
               </View>
               <Text style={styles.checkoutText}>
-                $ {cart?.metaData?.grandTotal?.toFixed(2)}
+                 {cartItemsByRestaurant?.metaData?.grandTotal?.toFixed(2)} đ
               </Text>
             </TouchableOpacity>
             <Separator height={Display.setHeight(9)} />
@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    backgroundColor: Colors.PEACH
   },
   headerTitle: {
     fontSize: 20,
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: Display.setWidth(4),
-    backgroundColor: Colors.DEFAULT_GREEN,
+    backgroundColor: Colors.PEACH,
     borderRadius: 8,
     paddingVertical: 15,
     paddingHorizontal: 20,

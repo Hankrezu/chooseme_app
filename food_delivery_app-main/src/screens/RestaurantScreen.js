@@ -74,7 +74,7 @@ const RestaurantScreen = ({
   }, []);
   // console.log(restaurantId)
   // console.log(restaurant?.images?.cover)
-   console.log(restaurant)
+   console.log(restaurant?.location)
   const dispatch = useDispatch();
   const isBookmarked = useSelector(
     state =>
@@ -89,7 +89,8 @@ const RestaurantScreen = ({
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="default" translucent backgroundColor="transparent" />
+      <StatusBar barStyle="dark-light" translucent backgroundColor={Colors.PEACH} />
+      
       <>
         <Image
           source={{uri:restaurant?.images?.cover}}
@@ -127,7 +128,7 @@ const RestaurantScreen = ({
                 />
                 <Text style={styles.deliveryDetailText}>Free Delivery</Text>
               </View>
-              <View style={styles.rowAndCenter}>
+              {/* <View style={styles.rowAndCenter}>
                 <Image
                   style={styles.deliveryDetailIcon}
                   source={Images.DELIVERY_TIME}
@@ -135,21 +136,21 @@ const RestaurantScreen = ({
                 <Text style={styles.deliveryDetailText}>
                   {restaurant?.time} min
                 </Text>
-              </View>
+              </View> */}
               <View style={styles.rowAndCenter}>
                 <Image
                   style={styles.deliveryDetailIcon}
                   source={Images.MARKER}
                 />
                 <Text style={styles.deliveryDetailText}>
-                  {restaurant?.distance / 1000}km
+                  {restaurant?.location}
                 </Text>
               </View>
-              <View style={styles.restaurantType}>
+              {/* <View style={styles.restaurantType}>
                 <Text style={styles.restaurantTypeText}>
                   {restaurant?.type}
                 </Text>
-              </View>
+              </View> */}
             </View>
             <View style={styles.categoriesContainer}>
               <FlatList

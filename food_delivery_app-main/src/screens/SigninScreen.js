@@ -121,12 +121,13 @@ const SigninScreen = ({navigation}) => {
           <Text style={styles.rememberMeText}>Remember me</Text>
         </View> */}
 
-        <Text
+        {/* <Text
           style={styles.forgotPasswordText}
           onPress={() => navigation.navigate('ForgotPassword')}>
           Forgot Password
-        </Text>
+        </Text> */}
       </View>
+      <Separator height={70}/>
       <TouchableOpacity
         style={styles.signinButton}
         onPress={() => signIn()}
@@ -137,7 +138,7 @@ const SigninScreen = ({navigation}) => {
           <Text style={styles.signinButtonText}>Choose Me</Text>
         )}
       </TouchableOpacity>
-      <Text style={styles.orText}>OR</Text>
+      {/* <Text style={styles.orText}>OR</Text> */}
 
       {/* <TouchableOpacity style={styles.facebookButton}>
         <View style={styles.socialButtonsContainer}>
@@ -150,14 +151,14 @@ const SigninScreen = ({navigation}) => {
         </View>
       </TouchableOpacity> */}
       
-      <TouchableOpacity style={styles.googleButton}>
+      {/* <TouchableOpacity style={styles.googleButton}>
         <View style={styles.socialButtonsContainer}>
           <View style={styles.signinButtonLogoContainer}>
             <Image source={Images.GOOGLE} style={styles.signinButtonLogo} />
           </View>
           <Text style={styles.socialSigninButtonText}>Connect with Google</Text>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.signupContainer}>
         <Text style={styles.accountText}>Don't have an account?</Text>
         <Text

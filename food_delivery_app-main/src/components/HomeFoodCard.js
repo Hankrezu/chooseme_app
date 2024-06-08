@@ -37,7 +37,7 @@ const HomeFoodCard = ({_id, name, description, price,
           </Text>
         </TouchableOpacity>
         <View style={styles.footerContainer}>
-          <Text style={styles.priceText}>$ {price}</Text>
+          <Text style={styles.priceText}> {price} đ</Text>
         </View>
       </View>
     </View>

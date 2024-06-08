@@ -7,10 +7,21 @@ import {
   FlatList,
 } from 'react-native';
 import { Colors, Fonts, Images } from '../contants';
-import { Separator, BookmarkCard,RestaurantCard } from '../components';
+import { Separator, BookmarkCard,RestaurantCart, } from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Display } from '../utils';
 import { CartService } from '../services';
+
+const ListItemSeparator = () => (
+  <View
+    style={{
+      height: 0.8,
+      backgroundColor: Colors.DEFAULT_GREY,
+      width: '100%',
+      marginVertical: 10,
+    }}
+  />
+);
 
 const OrderScreen = ({ navigation }) => {
   const [restaurants, setRestaurants] = useState([]);
@@ -29,7 +40,7 @@ const OrderScreen = ({ navigation }) => {
   
     return unsubscribe;
   }, [navigation]);
-  
+  console.log(restaurants)
 
   const getUniqueRestaurants = (cartItems) => {
     const restaurantMap = new Map(); // Sử dụng Map để lưu trữ các nhà hàng duy nhất
@@ -48,7 +59,7 @@ const OrderScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={Colors.DEFAULT_WHITE}
+        backgroundColor={Colors.PEACH}
         translucent
       />
       <Separator height={StatusBar.currentHeight} />
@@ -62,13 +73,15 @@ const OrderScreen = ({ navigation }) => {
       </View>
       <View>
       <FlatList
+        style={styles.RestaurantCartList}
         data={restaurants}
         keyExtractor={(item, index) => `${item._id}_${index}`}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={() => <Separator height={10} />}
         ListFooterComponent={() => <Separator height={10} />}
+        ItemSeparatorComponent={() => <ListItemSeparator />}
         renderItem={({ item }) => (
-          <RestaurantCard
+          <RestaurantCart
             {...item}
             navigate={() =>
             navigation.navigate('Cart', { restaurantId: item._id }) // Truyền restaurantId khi chuyển trang
@@ -110,6 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    backgroundColor: Colors.PEACH
   },
   headerTitle: {
     fontSize: 20,
@@ -235,6 +249,9 @@ const styles = StyleSheet.create({
   emptyCartImage: {
     height: Display.setWidth(60),
     width: Display.setWidth(60),
+  },
+  RestaurantCartList:{
+    marginHorizontal: 15,
   },
 });
 

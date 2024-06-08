@@ -9,6 +9,7 @@ import CategoryListItem from './CategoryListItem';
 import HomeFoodCard from './HomeFoodCard';
 import BookmarkCard from './BookmarkCard';
 import FoodCard from './FoodCard';
+import RestaurantCart from './RestaurantCart';
 
 export {
   WelcomeCard,
@@ -22,4 +23,5 @@ export {
   HomeFoodCard,
   BookmarkCard,
   FoodCard,
+  RestaurantCart
 };

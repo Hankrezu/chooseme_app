@@ -40,22 +40,6 @@ const BookmarkCard = ({_id, name, images, location, tags, navigate}) => {
             <FontAwesome name="star" size={13} />
             <Text style={styles.ratingText}>4.3</Text>
           </View>
-          <View style={styles.rowAndCenter}>
-            <Ionicons
-              name="ios-time-outline"
-              color={Colors.GOOGLE_BLUE}
-              size={15}
-            />
-            <Text style={styles.ratingText}>20 mins</Text>
-          </View>
-          <View style={styles.rowAndCenter}>
-            <Ionicons
-              name="location-outline"
-              color={Colors.SECONDARY_GREEN}
-              size={15}
-            />
-            <Text style={styles.ratingText}>10 KM</Text>
-          </View>
         </View>
       </View>
     </View>

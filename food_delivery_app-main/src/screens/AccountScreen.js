@@ -55,8 +55,8 @@ const AccountScreen = ({}) => {
   return (
     <View style={styles.container}>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={Colors.DEFAULT_GREEN}
+        barStyle="dark-content"
+        backgroundColor={Colors.PEACH}
         translucent
       />
       <Separator height={StatusBar.currentHeight} />
@@ -65,14 +65,13 @@ const AccountScreen = ({}) => {
         <Ionicons
           name="chevron-back-outline"
           size={20}
-          color={Colors.DEFAULT_WHITE}
+          color={Colors.DEFAULT_BLACK}
           onPress={() => navigation.goBack()}
         />
         <Text style={styles.headerText}>Account</Text>
         <View>
-          <Feather name="bell" size={20} color={Colors.DEFAULT_WHITE} />
-          <View style={styles.alertBadge}>
-            <Text style={styles.alertBadgeText}>12</Text>
+          <View>
+            <Text></Text>
           </View>
         </View>
       </View>
@@ -125,7 +124,7 @@ const AccountScreen = ({}) => {
             <Ionicons
               name="person-outline"
               size={18}
-              color={Colors.DEFAULT_GREEN}
+              color={Colors.PEACH}
             />
             <Text style={styles.sectionText}>Manage Profile</Text>
           </View>
@@ -140,7 +139,7 @@ const AccountScreen = ({}) => {
             <Ionicons
               name="card-outline"
               size={18}
-              color={Colors.DEFAULT_GREEN}
+              color={Colors.PEACH}
             />
             <Text style={styles.sectionText}>Payment</Text>
           </View>
@@ -154,14 +153,14 @@ const AccountScreen = ({}) => {
         <Text style={styles.sectionHeaderText}>Notification</Text>
         <View style={styles.sectionContainer} activeOpacity={0.8}>
           <View style={styles.sectionTextContainer}>
-            <Feather name="bell" size={18} color={Colors.DEFAULT_GREEN} />
+            <Feather name="bell" size={18} color={Colors.PEACH} />
             <Text style={styles.sectionText}>Notification</Text>
           </View>
           <ToggleButton size={0.5} />
         </View>
         <View style={styles.sectionContainer} activeOpacity={0.8}>
           <View style={styles.sectionTextContainer}>
-            <Feather name="bell" size={18} color={Colors.DEFAULT_GREEN} />
+            <Feather name="bell" size={18} color={Colors.PEACH} />
             <Text style={styles.sectionText}>Promos & Offers Notification</Text>
           </View>
           <ToggleButton size={0.5} />
@@ -173,7 +172,7 @@ const AccountScreen = ({}) => {
             <Ionicons
               name="ios-color-palette-outline"
               size={18}
-              color={Colors.DEFAULT_GREEN}
+              color={Colors.PEACH}
             />
             <Text style={styles.sectionText}>Dark Mode</Text>
           </View>
@@ -187,7 +186,7 @@ const AccountScreen = ({}) => {
             <MaterialCommunityIcons
               name="logout"
               size={18}
-              color={Colors.DEFAULT_GREEN}
+              color={Colors.PEACH}
             />
             <Text style={styles.sectionText}>Logout</Text>
           </TouchableOpacity>
@@ -203,7 +202,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.SECONDARY_WHITE,
   },
   backgroundCurvedContainer: {
-    backgroundColor: Colors.DEFAULT_GREEN,
+    backgroundColor: Colors.PEACH,
     height: 2000,
     position: 'absolute',
     top: -1 * (2000 - 230),
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: Fonts.POPPINS_MEDIUM,
     lineHeight: 20 * 1.4,
-    color: Colors.DEFAULT_WHITE,
+    color: Colors.DEFAULT_BLACK,
   },
   alertBadge: {
     backgroundColor: Colors.DEFAULT_YELLOW,
@@ -265,16 +264,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   nameText: {
+    fontSize: 16,
+    fontFamily: Fonts.POPPINS_REGULAR,
+    lineHeight: 16 * 1.4,
+    color: Colors.DEFAULT_BLACK,
+  },
+  emailText: {
     fontSize: 14,
     fontFamily: Fonts.POPPINS_REGULAR,
     lineHeight: 14 * 1.4,
-    color: Colors.DEFAULT_WHITE,
-  },
-  emailText: {
-    fontSize: 10,
-    fontFamily: Fonts.POPPINS_REGULAR,
-    lineHeight: 10 * 1.4,
-    color: Colors.DEFAULT_WHITE,
+    color: Colors.DEFAULT_BLACK,
   },
   menuContainer: {
     backgroundColor: Colors.DEFAULT_WHITE,

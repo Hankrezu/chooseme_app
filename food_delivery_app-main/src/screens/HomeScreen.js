@@ -130,8 +130,8 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={Colors.DEFAULT_GREEN}
+        barStyle="dark-content"
+        backgroundColor={Colors.DEFAULT_WHITE}
         translucent
       />
 
@@ -160,7 +160,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.locationContainer}>
           <Ionicons
             name="location-outline"
-            size={15}
+            size={20}
             color={Colors.DEFAULT_WHITE}
           />
           <Text style={styles.locationText}>Delivered to</Text>
@@ -168,7 +168,7 @@ const HomeScreen = ({ navigation }) => {
           <MaterialIcons
             name="keyboard-arrow-down"
             size={16}
-            color={Colors.DEFAULT_YELLOW}
+            color={Colors.DEFAULT_BLACK}
           />
         </View>
         <View style={styles.categoriesContainer}>
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.POPPINS_MEDIUM,
   },
   selectedLocationText: {
-    color: Colors.DEFAULT_YELLOW,
+    color: Colors.DEFAULT_BLACK,
     marginLeft: 5,
     fontSize: 14,
     lineHeight: 14 * 1.4,

@@ -54,23 +54,18 @@ const FoodScreen = ({
       <StatusBar
         barStyle="dark-content"
         translucent
-        backgroundColor="transparent"
+        backgroundColor={Colors.PEACH}
       />
       <Image
         style={styles.image}
-        source={{
-          uri: StaticImageService.getGalleryImage(
-            food?.image,
-            ApiContants.STATIC_IMAGE.SIZE.SQUARE,
-          ),
-        }}
+        source={{uri: food?.image,}}
       />
       <ScrollView>
         <Separator height={Display.setWidth(100)} />
         <View style={styles.mainContainer}>
           <View style={styles.titleHeaderContainer}>
             <Text style={styles.titleText}>{food?.name}</Text>
-            <Text style={styles.priceText}>$ {food?.price}</Text>
+            <Text style={styles.priceText}>{food?.price} đ</Text>
           </View>
           <View style={styles.subHeaderContainer}>
             <View style={styles.rowAndCenter}>
@@ -80,11 +75,6 @@ const FoodScreen = ({
                 color={Colors.DEFAULT_YELLOW}
               />
               <Text style={styles.ratingText}>4.2</Text>
-              <Text style={styles.reviewsText}>(255)</Text>
-            </View>
-            <View style={styles.rowAndCenter}>
-              <Image style={styles.iconImage} source={Images.DELIVERY_TIME} />
-              <Text style={styles.deliveryText}>20 min</Text>
             </View>
             <View style={styles.rowAndCenter}>
               <Image style={styles.iconImage} source={Images.DELIVERY_CHARGE} />
@@ -288,7 +278,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   cartButton: {
-    backgroundColor: Colors.DEFAULT_GREEN,
+    backgroundColor: Colors.PEACH,
     height: Display.setHeight(6),
     width: Display.setWidth(58),
     justifyContent: 'center',

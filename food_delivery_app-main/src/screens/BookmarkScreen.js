@@ -23,7 +23,7 @@ const BookmarkScreen = ({navigation}) => {
     <View style={styles.container}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={Colors.DEFAULT_WHITE}
+        backgroundColor={Colors.PEACH}
         translucent
       />
       <Separator height={StatusBar.currentHeight} />
@@ -66,6 +66,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    backgroundColor: Colors.PEACH
+    
   },
   headerTitle: {
     fontSize: 20,
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bookmarkList: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
   },
 });
 
